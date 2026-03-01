@@ -1,0 +1,358 @@
+event_model:
+  name: "Simple Todo List App"
+  description: "Covers the full lifecycle of todo items — creation, editing, completion, reopening, deletion, and automated overdue detection."
+  slices:
+
+    # ── STATE CHANGES ─────────────────────────────────────────────
+
+    - name: "Create Todo List"
+      type: state_change
+      actor: User
+      command:
+        name: CreateTodoList
+        payload:
+          listId: uuid
+          name: string
+      business_rules:
+        - "Name must not be blank"
+      event:
+        name: TodoListCreated
+        data:
+          listId: uuid
+          name: string
+          createdAt: datetime
+
+    - name: "Rename Todo List"
+      type: state_change
+      actor: User
+      precondition:
+        projection: TodoListDetailProjection
+        query: GetTodoListDetail
+      command:
+        name: RenameTodoList
+        payload:
+          listId: uuid
+          name: string
+      business_rules:
+        - "Todo list must exist and not be deleted"
+        - "Name must not be blank"
+      event:
+        name: TodoListRenamed
+        data:
+          listId: uuid
+          name: string
+          renamedAt: datetime
+
+    - name: "Archive Todo List"
+      type: state_change
+      actor: User
+      precondition:
+        projection: TodoListDetailProjection
+        query: GetTodoListDetail
+      command:
+        name: ArchiveTodoList
+        payload:
+          listId: uuid
+      business_rules:
+        - "Todo list must exist and not already be archived or deleted"
+      event:
+        name: TodoListArchived
+        data:
+          listId: uuid
+          archivedAt: datetime
+
+    - name: "Delete Todo List"
+      type: state_change
+      actor: User
+      precondition:
+        projection: TodoListDetailProjection
+        query: GetTodoListDetail
+      command:
+        name: DeleteTodoList
+        payload:
+          listId: uuid
+      business_rules:
+        - "Todo list must exist and not already be deleted"
+        - "Todo list must be empty (no todos in any status)"
+      event:
+        name: TodoListDeleted
+        data:
+          listId: uuid
+          deletedAt: datetime
+
+    - name: "Create Todo"
+      type: state_change
+      actor: User
+      command:
+        name: CreateTodo
+        payload:
+          todoId: uuid
+          listId: uuid
+          title: string
+          description: string
+          dueDate: date        # optional
+          priority: string     # Low | Medium | High — defaults to Medium
+      business_rules:
+        - "Title must not be blank"
+        - "Priority must be one of: Low, Medium, High — defaults to Medium if omitted"
+        - "Referenced todo list must exist and not be deleted"
+      event:
+        name: TodoCreated
+        data:
+          todoId: uuid
+          listId: uuid
+          title: string
+          description: string
+          dueDate: date
+          priority: string     # Low | Medium | High
+          createdAt: datetime
+
+    - name: "Edit Todo"
+      type: state_change
+      actor: User
+      precondition:
+        projection: TodoDetailProjection
+        query: GetTodoDetail
+      command:
+        name: EditTodo
+        payload:
+          todoId: uuid
+          title: string
+          description: string
+          priority: string     # Low | Medium | High
+      business_rules:
+        - "Todo must exist and not be deleted"
+        - "Title must not be blank"
+        - "Priority must be one of: Low, Medium, High"
+      event:
+        name: TodoEdited
+        data:
+          todoId: uuid
+          title: string
+          description: string
+          priority: string     # Low | Medium | High
+          editedAt: datetime
+
+    - name: "Set Due Date on Todo"
+      type: state_change
+      actor: User
+      precondition:
+        projection: TodoDetailProjection
+        query: GetTodoDetail
+      command:
+        name: SetTodoDueDate
+        payload:
+          todoId: uuid
+          dueDate: date
+      business_rules:
+        - "Todo must exist and not be deleted"
+        - "Due date must not be in the past"
+      event:
+        name: TodoDueDateSet
+        data:
+          todoId: uuid
+          dueDate: date
+          setAt: datetime
+
+    - name: "Complete Todo"
+      type: state_change
+      actor: User
+      precondition:
+        projection: ActiveTodosProjection
+        query: GetActiveTodos
+      command:
+        name: CompleteTodo
+        payload:
+          todoId: uuid
+      business_rules:
+        - "Todo must be in Active or Overdue status"
+      event:
+        name: TodoCompleted
+        data:
+          todoId: uuid
+          completedAt: datetime
+
+    - name: "Reopen Todo"
+      type: state_change
+      actor: User
+      precondition:
+        projection: CompletedTodosProjection
+        query: GetCompletedTodos
+      command:
+        name: ReopenTodo
+        payload:
+          todoId: uuid
+      business_rules:
+        - "Todo must be in Completed status"
+      event:
+        name: TodoReopened
+        data:
+          todoId: uuid
+          reopenedAt: datetime
+
+    - name: "Delete Todo"
+      type: state_change
+      actor: User
+      precondition:
+        projection: TodoDetailProjection
+        query: GetTodoDetail
+      command:
+        name: DeleteTodo
+        payload:
+          todoId: uuid
+      business_rules:
+        - "Todo must exist and not already be deleted"
+      event:
+        name: TodoDeleted
+        data:
+          todoId: uuid
+          deletedAt: datetime
+
+    # ── STATE VIEWS ───────────────────────────────────────────────
+
+    - name: "View My Todo Lists"
+      type: state_view
+      source_events:
+        - TodoListCreated
+        - TodoListRenamed
+        - TodoListArchived
+        - TodoListDeleted
+      projection: TodoListsProjection
+      query: GetMyTodoLists
+      ui: TodoListsScreen
+      filters:
+        - by status (active, archived)
+        - by creation date (ascending)
+
+    - name: "View Todo List Detail"
+      type: state_view
+      source_events:
+        - TodoListCreated
+        - TodoListRenamed
+        - TodoListArchived
+        - TodoListDeleted
+      projection: TodoListDetailProjection
+      query: GetTodoListDetail
+      ui: TodoListDetailScreen
+
+    - name: "View Active Todos"
+      type: state_view
+      source_events:
+        - TodoCreated
+        - TodoCompleted
+        - TodoReopened
+        - TodoDeleted
+        - TodoMarkedOverdue
+        - TodoListArchived
+        - TodoListDeleted
+      projection: ActiveTodosProjection
+      query: GetActiveTodos
+      ui: ActiveTodoListScreen
+      filters:
+        - by listId
+        - by priority (High → Medium → Low)
+        - by due date (ascending)
+        - by creation date
+
+    - name: "View Completed Todos"
+      type: state_view
+      source_events:
+        - TodoCompleted
+        - TodoReopened
+        - TodoDeleted
+        - TodoListArchived
+        - TodoListDeleted
+      projection: CompletedTodosProjection
+      query: GetCompletedTodos
+      ui: CompletedTodoListScreen
+      filters:
+        - by listId
+        - by completion date (descending)
+
+    - name: "View Overdue Todos"
+      type: state_view
+      source_events:
+        - TodoCreated
+        - TodoDueDateSet
+        - TodoMarkedOverdue
+        - TodoCompleted
+        - TodoDeleted
+        - TodoEdited
+        - TodoListArchived
+        - TodoListDeleted
+      projection: OverdueTodosProjection
+      query: GetOverdueTodos
+      ui: OverdueTodoListScreen
+      filters:
+        - by listId
+        - by priority (High → Medium → Low)
+
+    - name: "View Todo Detail"
+      type: state_view
+      source_events:
+        - TodoCreated
+        - TodoEdited
+        - TodoDueDateSet
+        - TodoCompleted
+        - TodoReopened
+        - TodoMarkedOverdue
+        - TodoDeleted
+        - TodoListArchived
+        - TodoListDeleted
+      projection: TodoDetailProjection
+      query: GetTodoDetail
+      ui: TodoDetailScreen
+
+    - name: "View Notification History"
+      type: state_view
+      source_events:
+        - TodoDueReminderSent
+      projection: NotificationHistoryProjection
+      query: GetNotificationHistory
+      ui: NotificationHistoryScreen
+      filters:
+        - by sent date (descending)
+        - by todoId
+
+    # ── AUTOMATIONS ───────────────────────────────────────────────
+
+    - name: "Send Due Date Reminder Notification"
+      type: automation
+      trigger: "hourly"
+      projection_todo: TodosDueWithinReminderWindowProjection
+      automation: DueDateReminderJob
+      command:
+        name: SendTodoDueReminder
+        payload:
+          todoId: uuid
+          userId: uuid
+          dueDate: date
+      business_rules:
+        - "Todo must be in Active or Overdue status"
+        - "Due date must be within the reminder window (e.g. 24 hours)"
+        - "Reminder must not have already been sent for this todo/due date combination"
+      event:
+        name: TodoDueReminderSent
+        data:
+          todoId: uuid
+          userId: uuid
+          dueDate: date
+          sentAt: datetime
+
+    - name: "Auto-Mark Overdue Todos"
+      type: automation
+      trigger: "daily at 00:01 UTC"
+      projection_todo: TodosDueTodayOrEarlierProjection
+      automation: OverdueDetectionJob
+      command:
+        name: MarkTodoOverdue
+        payload:
+          todoId: uuid
+      business_rules:
+        - "Todo must be in Active status"
+        - "Todo due date must be earlier than today"
+      event:
+        name: TodoMarkedOverdue
+        data:
+          todoId: uuid
+          markedOverdueAt: datetime

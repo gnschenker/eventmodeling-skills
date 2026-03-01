@@ -1,0 +1,9 @@
+{
+  "name": "em-skills",
+  "version": "0.1.0",
+  "description": "EventModeling skill that transforms product visions and business specifications into structured Event Models using the four canonical EM patterns.",
+  "author": {
+    "name": "Gabriel Schenker"
+  },
+  "keywords": ["event-modeling", "event-storming", "ddd", "cqrs", "event-sourcing", "architecture"]
+}
