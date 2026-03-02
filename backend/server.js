@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import { query } from 'es-dcb-library';
 import { store, pool } from './store.js';
 import { initProjection } from './projection-runner.js';
 
@@ -32,6 +33,9 @@ import * as completedTodosProjection from './slices/view-completed-todos/project
 import * as overdueTodosProjection from './slices/view-overdue-todos/projection.js';
 import * as todoDetailProjection from './slices/view-todo-detail/projection.js';
 import * as notificationHistoryProjection from './slices/view-notification-history/projection.js';
+
+// --- Automation jobs ---
+import { runDueDateReminderJob } from './slices/send-due-date-reminder-notification/job.js';
 
 const PORT = process.env.PORT ?? 3000;
 
@@ -96,6 +100,19 @@ async function start() {
 
   await initProjection(pool, notificationHistoryProjection);
   console.log('NotificationHistoryProjection started');
+
+  // --- Automation jobs ---
+  const jobDeps = { pool, store, query };
+
+  // DueDateReminderJob: run immediately on start, then every hour
+  const HOUR_MS = 60 * 60 * 1000;
+  const runReminder = () =>
+    runDueDateReminderJob(jobDeps).catch((err) =>
+      console.error('DueDateReminderJob error:', err),
+    );
+  runReminder();
+  setInterval(runReminder, HOUR_MS);
+  console.log('DueDateReminderJob scheduled (hourly)');
 
   app.listen(PORT, () => {
     console.log(`Backend listening on port ${PORT}`);
