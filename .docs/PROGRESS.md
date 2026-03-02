@@ -156,3 +156,15 @@ _Entries are added here after each slice is merged. Format:_
 - CORS is configured in `server.js` with `FRONTEND_ORIGIN` env var (defaults to `http://localhost:8080`).
 - `node --watch` (Node 20 built-in) is the dev server — no nodemon needed.
 - `test:unit` / `test:integration` scripts filter by `--test-name-pattern`; test names must include the word "unit" or "integration" accordingly.
+
+---
+
+## Bug-fix session (2026-03-02)
+
+Bugs found and fixed during end-to-end UI testing (PR #22 — `fix/ui-bugs`):
+
+1. **Active Todos SQL bind error** — `params = ['active', 'overdue']` was a flat 2-element array; the pg driver treats each element as a separate `$N` parameter, causing "bind message supplies 3 parameters but statement requires 2" on filtered queries. Fix: use nested array `[['active', 'overdue']]` to pass the array as a single `$1` parameter to `= ANY($1::text[])`.
+2. **No Cache-Control header** — Express `ETag` without `Cache-Control: no-store` caused browsers to cache GET responses; mutations appeared to have no effect until hard-reload. Fix: add a global `(_req, res, next) => { res.set('Cache-Control', 'no-store'); next(); }` middleware in `server.js`.
+3. **Invisible modal submit buttons (9 files)** — `.actions button` / `{parent} button` selectors had higher CSS specificity (0,0,1,1) than `.btn-primary` / `.btn-danger` (0,0,1,0), rendering white text on a white background. Fix: scope the colour rules under `.actions` (e.g. `.actions .btn-primary`) or the parent container class so specificity matches the override intent.
+4. **Post-write projection lag** — `refreshCurrentView()` re-fetched after only 50 ms, before the 500 ms projection polling interval had processed the new event. Fix: raise the delay to 600 ms so the read-side table is reliably populated before the view refetches.
+5. **Modal backdrop blocking clicks** — `display: flex` in the author CSS overrode the `hidden` attribute's implied `display: none`, making an invisible full-viewport backdrop intercept every click and call `history.back()`. Fix: default `.modal-backdrop` to `display: none` and restore flex only via `.modal-backdrop:not([hidden]) { display: flex }`.
