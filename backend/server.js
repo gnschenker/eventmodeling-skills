@@ -19,10 +19,9 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Slice routes are registered here as slices are implemented.
-// Example (added per slice):
-//   import createTodoListRoute from './slices/create-todo-list/route.js';
-//   app.use(createTodoListRoute);
+// --- Slice routes ---
+import createTodoListRoute from './slices/create-todo-list/route.js';
+app.use(createTodoListRoute);
 
 // --- Bootstrap ---
 async function start() {
