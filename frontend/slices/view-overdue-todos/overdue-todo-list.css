@@ -1,0 +1,79 @@
+.overdue-todo-list {
+  max-width: 700px;
+}
+
+.overdue-todo-list .header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.overdue-todo-list h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.overdue-todo-list .btn-refresh {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.overdue-todo-list .btn-refresh:hover {
+  background: #f0f0f0;
+}
+
+.loading {
+  color: #666;
+  font-size: 0.9rem;
+  padding: 0.5rem 0;
+}
+
+.error {
+  color: #c00;
+  font-size: 0.9rem;
+  min-height: 1em;
+}
+
+.todos-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.todos-table th {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 2px solid #ddd;
+  font-weight: 600;
+  color: #555;
+}
+
+.todos-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.todos-table tr:hover td {
+  background: #f9f9f9;
+  cursor: pointer;
+}
+
+.priority--High   { color: #dc2626; font-weight: 600; }
+.priority--Medium { color: #d97706; }
+.priority--Low    { color: #6b7280; }
+
+.due-date {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.empty-state {
+  color: #6b7280;
+  font-size: 0.9rem;
+  padding: 1rem 0;
+}

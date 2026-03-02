@@ -138,6 +138,7 @@ Claude will write `hotel-booking-ui-mockups.md` to the same directory, containin
 | `delete-todo` | `DELETE /todos/:todoId` | `#/delete-todo` |
 | `view-active-todos` | `GET /todos/active?listId=...` | `#/view-active-todos` |
 | `view-completed-todos` | `GET /todos/completed?listId=...` | `#/view-completed-todos` |
+| `view-overdue-todos` | `GET /todos/overdue?listId=...` | `#/view-overdue-todos` |
 | `view-my-todo-lists` | `GET /todo-lists?status=active|archived` | `#/view-my-todo-lists` |
 | `view-todo-list-detail` | `GET /todo-lists/:listId` | `#/view-todo-list-detail` |
 

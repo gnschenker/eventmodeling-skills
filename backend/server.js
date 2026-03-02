@@ -20,12 +20,14 @@ import myTodoListsQuery from './slices/view-my-todo-lists/query.js';
 import todoListDetailQuery from './slices/view-todo-list-detail/query.js';
 import activeTodosQuery from './slices/view-active-todos/query.js';
 import completedTodosQuery from './slices/view-completed-todos/query.js';
+import overdueTodosQuery from './slices/view-overdue-todos/query.js';
 
 // --- Projections ---
 import * as todoListsProjection from './slices/view-my-todo-lists/projection.js';
 import * as todoListDetailProjection from './slices/view-todo-list-detail/projection.js';
 import * as activeTodosProjection from './slices/view-active-todos/projection.js';
 import * as completedTodosProjection from './slices/view-completed-todos/projection.js';
+import * as overdueTodosProjection from './slices/view-overdue-todos/projection.js';
 
 const PORT = process.env.PORT ?? 3000;
 
@@ -61,6 +63,7 @@ app.use(myTodoListsQuery);
 app.use(todoListDetailQuery);
 app.use(activeTodosQuery);
 app.use(completedTodosQuery);
+app.use(overdueTodosQuery);
 
 // --- Bootstrap ---
 async function start() {
@@ -78,6 +81,9 @@ async function start() {
 
   await initProjection(pool, completedTodosProjection);
   console.log('CompletedTodosProjection started');
+
+  await initProjection(pool, overdueTodosProjection);
+  console.log('OverdueTodosProjection started');
 
   app.listen(PORT, () => {
     console.log(`Backend listening on port ${PORT}`);
