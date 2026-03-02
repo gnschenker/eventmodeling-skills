@@ -19,11 +19,13 @@ import deleteTodoRoute from './slices/delete-todo/route.js';
 import myTodoListsQuery from './slices/view-my-todo-lists/query.js';
 import todoListDetailQuery from './slices/view-todo-list-detail/query.js';
 import activeTodosQuery from './slices/view-active-todos/query.js';
+import completedTodosQuery from './slices/view-completed-todos/query.js';
 
 // --- Projections ---
 import * as todoListsProjection from './slices/view-my-todo-lists/projection.js';
 import * as todoListDetailProjection from './slices/view-todo-list-detail/projection.js';
 import * as activeTodosProjection from './slices/view-active-todos/projection.js';
+import * as completedTodosProjection from './slices/view-completed-todos/projection.js';
 
 const PORT = process.env.PORT ?? 3000;
 
@@ -58,6 +60,7 @@ app.use(deleteTodoRoute);
 app.use(myTodoListsQuery);
 app.use(todoListDetailQuery);
 app.use(activeTodosQuery);
+app.use(completedTodosQuery);
 
 // --- Bootstrap ---
 async function start() {
@@ -72,6 +75,9 @@ async function start() {
 
   await initProjection(pool, activeTodosProjection);
   console.log('ActiveTodosProjection started');
+
+  await initProjection(pool, completedTodosProjection);
+  console.log('CompletedTodosProjection started');
 
   app.listen(PORT, () => {
     console.log(`Backend listening on port ${PORT}`);
