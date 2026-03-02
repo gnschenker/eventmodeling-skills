@@ -44,13 +44,13 @@
   cursor: not-allowed;
 }
 
-.delete-todo-card .btn-danger {
+.delete-todo-card .actions .btn-danger {
   background: #dc2626;
   color: #fff;
   border-color: #dc2626;
 }
 
-.delete-todo-card .btn-danger:hover:not(:disabled) {
+.delete-todo-card .actions .btn-danger:hover:not(:disabled) {
   background: #b91c1c;
 }
 

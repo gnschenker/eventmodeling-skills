@@ -9,7 +9,7 @@ import { pool as dbPool } from '../../store.js';
  * @returns {Promise<Array<{ todoId, listId, title, description, dueDate, priority, status, createdAt }>>}
  */
 export async function getActiveTodos(pool, { listId } = {}) {
-  const params = ['active', 'overdue'];
+  const params = [['active', 'overdue']];
   let where = 'WHERE status = ANY($1::text[])';
   if (listId) {
     where += ' AND list_id = $2';

@@ -45,13 +45,13 @@
   cursor: not-allowed;
 }
 
-.btn-primary {
+.archive-todo-list-card .btn-primary {
   background: #2563eb;
   color: #fff;
   border-color: #2563eb;
 }
 
-.btn-primary:hover:not(:disabled) {
+.archive-todo-list-card .btn-primary:hover:not(:disabled) {
   background: #1d4ed8;
 }
 

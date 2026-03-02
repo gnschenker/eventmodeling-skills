@@ -49,6 +49,7 @@ if (!process.env.DATABASE_URL) {
 const app = express();
 app.use(cors({ origin: process.env.FRONTEND_ORIGIN ?? 'http://localhost:8080' }));
 app.use(express.json());
+app.use((_req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
 
 // Health check
 app.get('/health', (_req, res) => {

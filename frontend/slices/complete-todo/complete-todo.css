@@ -44,13 +44,13 @@
   cursor: not-allowed;
 }
 
-.complete-todo-card .btn-primary {
+.complete-todo-card .actions .btn-primary {
   background: #16a34a;
   color: #fff;
   border-color: #16a34a;
 }
 
-.complete-todo-card .btn-primary:hover:not(:disabled) {
+.complete-todo-card .actions .btn-primary:hover:not(:disabled) {
   background: #15803d;
 }
 

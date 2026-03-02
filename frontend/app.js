@@ -137,11 +137,12 @@ render();
 // ── View refresh helper ───────────────────────────────────────────────────────
 
 function refreshCurrentView() {
-  // Give history.back() time to settle, then reload the visible component
+  // Wait for history.back() to settle AND for the 500ms projection poll to process
+  // the new event before reloading the visible component.
   setTimeout(() => {
     const view = appEl.firstElementChild;
     if (view && typeof view._load === 'function') view._load();
-  }, 50);
+  }, 600);
 }
 
 // ── Navigation event wiring ───────────────────────────────────────────────────
