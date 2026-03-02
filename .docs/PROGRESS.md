@@ -24,7 +24,7 @@
 | `view-my-todo-lists` | state_view | done |
 | `view-todo-list-detail` | state_view | done |
 | `view-active-todos` | state_view | done |
-| `view-completed-todos` | state_view | pending |
+| `view-completed-todos` | state_view | done |
 | `view-overdue-todos` | state_view | pending |
 | `view-todo-detail` | state_view | pending |
 | `view-notification-history` | state_view | pending |
@@ -78,6 +78,10 @@ _Entries are added here after each slice is merged. Format:_
 - **CSS selector scoping**: all shadow-DOM CSS selectors must be prefixed with the form class (e.g. `.edit-todo-form .field`) to prevent bleeding into nested Web Components — per `rename-todo-list` lesson, now consistently enforced from this slice onward.
 - **`populate()` method**: the edit form exposes `populate({ title, description, priority })` so host pages can pre-fill fields from `TodoDetailProjection` before presenting the form.
 - **DCB query anchors on `TodoCreated` + `TodoDeleted`**: the handler only needs existence/deletion state, not the full edit history. Loading only these two event types is correct and minimal.
+
+### view-completed-todos — 2026-03-02
+- **Subscribe to TodoCreated even when not in EM source_events**: `TodoCompleted` payload only has `{ todoId, completedAt }` — no title or listId. Subscribing to `TodoCreated` stages a row with those fields so `TodoCompleted` can UPDATE it. The query layer hides staging rows (status='active') by filtering `WHERE status='completed'`.
+- **TodoReopened sets completed_at = NULL in SQL (not a parameter)**: Use literal SQL `NULL` to clear a nullable column: `SET completed_at = NULL`. Do not pass `null` as a parameter for `= $2` — that would set it to the Postgres NULL via binding, which works but is less readable.
 
 ### view-active-todos — 2026-03-02
 - **Soft-delete on TodoCompleted**: the projection does NOT delete the row when a todo is completed. Instead it sets `status='completed'`. This preserves the row for TodoReopened to UPDATE back to 'active'. The query filters to `status IN ('active','overdue')`.
