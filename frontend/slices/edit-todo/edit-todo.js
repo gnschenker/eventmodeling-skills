@@ -49,6 +49,7 @@ template.innerHTML = `
 
 class EditTodo extends HTMLElement {
   connectedCallback() {
+    if (this.shadowRoot) return;
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
@@ -121,6 +122,18 @@ class EditTodo extends HTMLElement {
 
   _showFormError(message) {
     this._formError.textContent = message;
+  }
+
+  /**
+   * Pre-fill the form with existing todo data.
+   * Call this after the element is connected, e.g. after fetching TodoDetailProjection.
+   * @param {{ title: string, description: string, priority: string }} data
+   */
+  populate({ title = '', description = '', priority = 'Medium' } = {}) {
+    if (!this.shadowRoot) return;
+    this._titleInput.value = title;
+    this._descriptionInput.value = description;
+    this._prioritySelect.value = priority;
   }
 
   _clearErrors() {
