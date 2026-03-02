@@ -25,7 +25,7 @@
 | `view-todo-list-detail` | state_view | done |
 | `view-active-todos` | state_view | done |
 | `view-completed-todos` | state_view | done |
-| `view-overdue-todos` | state_view | pending |
+| `view-overdue-todos` | state_view | done |
 | `view-todo-detail` | state_view | pending |
 | `view-notification-history` | state_view | pending |
 | `send-due-date-reminder-notification` | automation | pending |
@@ -78,6 +78,10 @@ _Entries are added here after each slice is merged. Format:_
 - **CSS selector scoping**: all shadow-DOM CSS selectors must be prefixed with the form class (e.g. `.edit-todo-form .field`) to prevent bleeding into nested Web Components — per `rename-todo-list` lesson, now consistently enforced from this slice onward.
 - **`populate()` method**: the edit form exposes `populate({ title, description, priority })` so host pages can pre-fill fields from `TodoDetailProjection` before presenting the form.
 - **DCB query anchors on `TodoCreated` + `TodoDeleted`**: the handler only needs existence/deletion state, not the full edit history. Loading only these two event types is correct and minimal.
+
+### view-overdue-todos — 2026-03-02
+- **TodoReopened not needed**: a reopened todo is NOT overdue until `TodoMarkedOverdue` fires again. Omitting `TodoReopened` from source events is intentional — the stale 'completed' staging row is harmless (filtered by the query) and the correct path back to 'overdue' is a fresh automation event.
+- **TodoEdited in source events**: needed to keep title and priority current in the projection since both are displayed on the overdue screen.
 
 ### view-completed-todos — 2026-03-02
 - **Subscribe to TodoCreated even when not in EM source_events**: `TodoCompleted` payload only has `{ todoId, completedAt }` — no title or listId. Subscribing to `TodoCreated` stages a row with those fields so `TodoCompleted` can UPDATE it. The query layer hides staging rows (status='active') by filtering `WHERE status='completed'`.
