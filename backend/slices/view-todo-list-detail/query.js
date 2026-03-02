@@ -33,8 +33,8 @@ export async function getTodoListDetail(pool, listId) {
 const router = Router();
 
 // GET /todo-lists/:listId
-// Response 200: { listId, name, status, createdAt }
-// Response 404: { error: '...' }  — list never existed or has been deleted
+// Response 200: { listId, name, status, createdAt }  (status may be 'deleted')
+// Response 404: { error: '...' }  — list never existed in this system
 router.get('/todo-lists/:listId', async (req, res) => {
   try {
     const detail = await getTodoListDetail(dbPool, req.params.listId);
