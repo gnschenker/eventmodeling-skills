@@ -36,6 +36,7 @@ import * as notificationHistoryProjection from './slices/view-notification-histo
 
 // --- Automation jobs ---
 import { runDueDateReminderJob } from './slices/send-due-date-reminder-notification/job.js';
+import { runOverdueDetectionJob } from './slices/auto-mark-overdue-todos/job.js';
 
 const PORT = process.env.PORT ?? 3000;
 
@@ -113,6 +114,18 @@ async function start() {
   runReminder();
   setInterval(runReminder, HOUR_MS);
   console.log('DueDateReminderJob scheduled (hourly)');
+
+  // OverdueDetectionJob: run at 00:01 UTC daily — poll every minute
+  const MINUTE_MS = 60 * 1000;
+  const runOverdue = () =>
+    runOverdueDetectionJob(jobDeps).catch((err) =>
+      console.error('OverdueDetectionJob error:', err),
+    );
+  setInterval(() => {
+    const now = new Date();
+    if (now.getUTCHours() === 0 && now.getUTCMinutes() === 1) runOverdue();
+  }, MINUTE_MS);
+  console.log('OverdueDetectionJob scheduled (daily at 00:01 UTC)');
 
   app.listen(PORT, () => {
     console.log(`Backend listening on port ${PORT}`);

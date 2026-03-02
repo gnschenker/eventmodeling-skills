@@ -144,6 +144,7 @@ Claude will write `hotel-booking-ui-mockups.md` to the same directory, containin
 | `view-todo-list-detail` | `GET /todo-lists/:listId` | `#/view-todo-list-detail` |
 | `view-notification-history` | `GET /notifications` | `#/view-notification-history` |
 | `send-due-date-reminder-notification` | automation (hourly) | — |
+| `auto-mark-overdue-todos` | automation (daily 00:01 UTC) | — |
 
 ---
 
