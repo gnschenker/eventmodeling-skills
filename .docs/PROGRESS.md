@@ -17,7 +17,7 @@
 | `delete-todo-list` | state_change | done |
 | `create-todo` | state_change | done |
 | `edit-todo` | state_change | done |
-| `set-due-date-on-todo` | state_change | pending |
+| `set-due-date-on-todo` | state_change | done |
 | `complete-todo` | state_change | pending |
 | `reopen-todo` | state_change | pending |
 | `delete-todo` | state_change | pending |
@@ -78,6 +78,11 @@ _Entries are added here after each slice is merged. Format:_
 - **CSS selector scoping**: all shadow-DOM CSS selectors must be prefixed with the form class (e.g. `.edit-todo-form .field`) to prevent bleeding into nested Web Components — per `rename-todo-list` lesson, now consistently enforced from this slice onward.
 - **`populate()` method**: the edit form exposes `populate({ title, description, priority })` so host pages can pre-fill fields from `TodoDetailProjection` before presenting the form.
 - **DCB query anchors on `TodoCreated` + `TodoDeleted`**: the handler only needs existence/deletion state, not the full edit history. Loading only these two event types is correct and minimal.
+
+### set-due-date-on-todo — 2026-03-02
+- **Lexicographic date comparison**: ISO 8601 `YYYY-MM-DD` strings compare correctly with `<` and `>=`. Today is valid (`dueDate < today` rejects only strictly past dates). No `Date` object parsing needed for a date-only comparison.
+- **Sub-resource route path**: `PATCH /todos/:todoId/due-date` keeps the due-date update separate from `PATCH /todos/:todoId` (edit), avoiding ambiguity and making intent clear.
+- **No `archived` check needed**: the EM business rules for this slice only specify "must exist and not be deleted" — no archived check, unlike list-scoped commands.
 
 ### view-my-todo-lists — 2026-03-02
 - **Polling-based projection runner**: `backend/projection-runner.js` is the shared infrastructure for all state_view slices. Each projection exports `NAME`, `SOURCE_EVENTS`, `initSchema(client)`, and `handleEvent(event, client)`. The runner creates a `projection_checkpoints` table, calls `initSchema`, then polls `events` every 500 ms for new events above the checkpoint, processing each in its own transaction.
