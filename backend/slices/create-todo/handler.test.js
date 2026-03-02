@@ -49,39 +49,43 @@ const baseCommand = {
 // ---------------------------------------------------------------------------
 
 test('unit: rejects when title is empty string', async () => {
-  const store = makeStore({ events: [listCreated()] });
+  const store = makeStore();
   await assert.rejects(
     () => handleCreateTodo({ ...baseCommand, title: '' }, { store, query: makeQuery() }),
     { name: 'ValidationError', message: 'Title must not be blank' },
   );
+  assert.equal(store.load.mock.calls.length, 0);
   assert.equal(store.append.mock.calls.length, 0);
 });
 
 test('unit: rejects when title is whitespace only', async () => {
-  const store = makeStore({ events: [listCreated()] });
+  const store = makeStore();
   await assert.rejects(
     () => handleCreateTodo({ ...baseCommand, title: '   ' }, { store, query: makeQuery() }),
     { name: 'ValidationError', message: 'Title must not be blank' },
   );
+  assert.equal(store.load.mock.calls.length, 0);
   assert.equal(store.append.mock.calls.length, 0);
 });
 
 test('unit: rejects when title is missing', async () => {
-  const store = makeStore({ events: [listCreated()] });
+  const store = makeStore();
   const { title: _t, ...commandWithoutTitle } = baseCommand;
   await assert.rejects(
     () => handleCreateTodo(commandWithoutTitle, { store, query: makeQuery() }),
     { name: 'ValidationError', message: 'Title must not be blank' },
   );
+  assert.equal(store.load.mock.calls.length, 0);
   assert.equal(store.append.mock.calls.length, 0);
 });
 
 test('unit: rejects when priority is invalid', async () => {
-  const store = makeStore({ events: [listCreated()] });
+  const store = makeStore();
   await assert.rejects(
     () => handleCreateTodo({ ...baseCommand, priority: 'Critical' }, { store, query: makeQuery() }),
     { name: 'ValidationError', message: 'Priority must be one of: Low, Medium, High' },
   );
+  assert.equal(store.load.mock.calls.length, 0);
   assert.equal(store.append.mock.calls.length, 0);
 });
 
