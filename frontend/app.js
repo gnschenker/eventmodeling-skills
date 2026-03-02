@@ -7,6 +7,7 @@ import './slices/delete-todo-list/delete-todo-list.js';
 import './slices/create-todo/create-todo.js';
 import './slices/view-my-todo-lists/my-todo-lists.js';
 import './slices/view-todo-list-detail/todo-list-detail.js';
+import './slices/edit-todo/edit-todo.js';
 
 // Simple hash-based router — each slice registers its own route.
 const routes = {
@@ -17,6 +18,7 @@ const routes = {
   '#/create-todo': '<create-todo list-id="demo-list-id"></create-todo>',
   '#/view-my-todo-lists': '<my-todo-lists></my-todo-lists>',
   '#/view-todo-list-detail': '<todo-list-detail list-id="demo-list-id"></todo-list-detail>',
+  '#/edit-todo': '<edit-todo todo-id="demo-todo-id"></edit-todo>',
 };
 
 function render() {
