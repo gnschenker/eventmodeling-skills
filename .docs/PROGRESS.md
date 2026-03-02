@@ -21,8 +21,8 @@
 | `complete-todo` | state_change | pending |
 | `reopen-todo` | state_change | pending |
 | `delete-todo` | state_change | pending |
-| `view-my-todo-lists` | state_view | pending |
-| `view-todo-list-detail` | state_view | pending |
+| `view-my-todo-lists` | state_view | done |
+| `view-todo-list-detail` | state_view | done |
 | `view-active-todos` | state_view | pending |
 | `view-completed-todos` | state_view | pending |
 | `view-overdue-todos` | state_view | pending |
@@ -71,6 +71,17 @@ _Entries are added here after each slice is merged. Format:_
 - **Priority defaulting before validation**: resolve the priority to `'Medium'` when the field is absent or empty, then validate the resolved value. This avoids a false validation failure when the client omits the field.
 - **list-id attribute pattern**: the `<create-todo>` Web Component reads `list-id` via `this.getAttribute('list-id')` at submit time. No `observedAttributes` needed since the attribute is only needed on submit, not on change.
 - **Optimistic concurrency on the list query**: the `TodoCreated` event is appended with `{ query: q, expectedVersion: version }` where `q` covers `TodoListCreated` + `TodoListDeleted` for the given `listId`. This prevents a race between two concurrent `CreateTodo` commands on a list that gets deleted between check and append.
+
+### view-my-todo-lists — 2026-03-02
+- **Polling-based projection runner**: `backend/projection-runner.js` is the shared infrastructure for all state_view slices. Each projection exports `NAME`, `SOURCE_EVENTS`, `initSchema(client)`, and `handleEvent(event, client)`. The runner creates a `projection_checkpoints` table, calls `initSchema`, then polls `events` every 500 ms for new events above the checkpoint, processing each in its own transaction.
+- **`pool` exported from `store.js`**: projections and query routes need direct pool access for SQL queries. `store.js` now exports both `pool` and `store`.
+- **No npm deps in test files**: `express` and `pg` are not installed locally (only in Docker). Test files must only import local files with no npm dependencies. `query.test.js` imports from `projection.js` (no npm deps); the Express route in `query.js` is thin glue that is not unit-tested.
+- **Idempotent projection inserts**: `TodoListCreated` uses `ON CONFLICT (list_id) DO NOTHING` so replaying events never duplicates rows.
+- **Deleted lists are removed**: `TodoListDeleted` removes the row from `todo_lists_projection`. The list screen only shows active/archived lists.
+
+### view-todo-list-detail — 2026-03-02
+- **Deleted rows are kept (status='deleted')**: unlike TodoListsProjection (which deletes rows on `TodoListDeleted`), the detail projection marks the row as `status='deleted'`. This allows `GET /todo-lists/:listId` to return meaningful data for audit and prevents confusion between "never existed" (404) and "existed but deleted" (still 404 in current implementation, but the data is available for future 410 responses).
+- **`GET /todo-lists/:listId` registered after `GET /todo-lists`**: Express matches routes in registration order. The specific `:listId` route must be registered after the bare `/todo-lists` route to avoid shadowing.
 
 ### scaffolding — 2026-03-02
 - `store.js` is the single place that creates the PG pool and `PostgresEventStore`. Slice handlers import store from `../../store.js`, never from `server.js` — importing `server.js` would trigger port binding and break tests.
