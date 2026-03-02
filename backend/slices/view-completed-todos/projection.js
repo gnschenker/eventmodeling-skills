@@ -5,7 +5,7 @@
  * Source events: TodoCompleted, TodoReopened, TodoDeleted, TodoListArchived, TodoListDeleted
  *
  * Table schema:
- *   completed_todos_projection(todo_id PK, list_id, title, completed_at)
+ *   completed_todos_projection(todo_id PK, list_id, title, status, completed_at)
  *
  * Design:
  *   - TodoCompleted inserts the row. But TodoCompleted payload only has
