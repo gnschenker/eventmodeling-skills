@@ -59,3 +59,49 @@
 .priority--High   { color: #dc2626; font-weight: 600; }
 .priority--Medium { color: #d97706; }
 .priority--Low    { color: #6b7280; }
+
+.td-back {
+  margin-bottom: 0.75rem;
+}
+
+.td-back-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.td-back-link:hover {
+  text-decoration: underline;
+}
+
+.action-bar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.btn-action {
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #222;
+}
+
+.btn-action:hover {
+  background: #f0f0f0;
+}
+
+.btn-danger {
+  color: #dc2626;
+  border-color: #dc2626;
+}
+
+.btn-danger:hover {
+  background: #fef2f2;
+}

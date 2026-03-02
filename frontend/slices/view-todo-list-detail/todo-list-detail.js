@@ -19,6 +19,10 @@ template.innerHTML = `
           <dd class="tld-created"></dd>
         </div>
       </dl>
+
+      <div class="tld-actions"></div>
+
+      <div class="tld-tabs"></div>
     </div>
   </div>
 `;
@@ -34,6 +38,8 @@ class TodoListDetail extends HTMLElement {
     this._name = this.shadowRoot.querySelector('.tld-name');
     this._status = this.shadowRoot.querySelector('.tld-status');
     this._created = this.shadowRoot.querySelector('.tld-created');
+    this._actions = this.shadowRoot.querySelector('.tld-actions');
+    this._tabs = this.shadowRoot.querySelector('.tld-tabs');
 
     this._load();
   }
@@ -78,6 +84,28 @@ class TodoListDetail extends HTMLElement {
     this._status.textContent = detail.status;
     this._status.className = `tld-status status--${detail.status}`;
     this._created.textContent = detail.createdAt ? detail.createdAt.slice(0, 10) : '—';
+
+    const id = this.listId;
+    const isActive = detail.status === 'active';
+    const isArchived = detail.status === 'archived';
+
+    this._actions.innerHTML = `
+      <div class="action-bar">
+        <a class="btn-action" href="#/rename-todo-list/${id}">Rename</a>
+        ${isActive ? `<a class="btn-action" href="#/archive-todo-list/${id}">Archive</a>` : ''}
+        ${!isArchived ? `<a class="btn-action btn-danger" href="#/delete-todo-list/${id}">Delete</a>` : ''}
+        <a class="btn-primary" href="#/create-todo/${id}">+ Add Todo</a>
+      </div>
+    `;
+
+    this._tabs.innerHTML = `
+      <div class="tab-bar">
+        <a class="tab-link" href="#/view-active-todos/${id}">Active Todos</a>
+        <a class="tab-link" href="#/view-completed-todos/${id}">Completed</a>
+        <a class="tab-link" href="#/view-overdue-todos/${id}">Overdue</a>
+      </div>
+    `;
+
     this._card.hidden = false;
   }
 

@@ -5,8 +5,19 @@
 .overdue-todo-list .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 0.75rem;
   margin-bottom: 1rem;
+}
+
+.otl-back-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.otl-back-link:hover {
+  text-decoration: underline;
 }
 
 .overdue-todo-list h2 {

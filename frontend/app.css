@@ -14,3 +14,55 @@ body {
   margin: 2rem auto;
   padding: 0 1rem;
 }
+
+/* Nav bar */
+.nav-bar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #1e293b;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.75rem 1.5rem;
+}
+
+.nav-bar .nav-brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #fff;
+  text-decoration: none;
+  margin-right: auto;
+}
+
+.nav-bar a {
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.nav-bar a:hover {
+  color: #fff;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal-dialog {
+  background: #fff;
+  max-width: 520px;
+  width: 90%;
+  border-radius: 8px;
+  padding: 2rem;
+  overflow-y: auto;
+  max-height: 90vh;
+}

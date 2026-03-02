@@ -5,11 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Todo List App</title>
   <link rel="stylesheet" href="app.css" />
+  <script type="module" src="shell/nav-bar.js"></script>
 </head>
 <body>
+  <nav-bar></nav-bar>
   <div id="app">
     <!-- Slice Web Components are mounted here by app.js -->
   </div>
+  <div id="modal" class="modal-backdrop" hidden></div>
   <script type="module" src="app.js"></script>
 </body>
 </html>
