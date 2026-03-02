@@ -1,0 +1,59 @@
+.reopen-todo-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1.5rem;
+  max-width: 480px;
+}
+
+.reopen-todo-card h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+}
+
+.reopen-todo-card p {
+  margin: 0 0 1.25rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.reopen-todo-card .form-error {
+  font-size: 0.85rem;
+  color: #c00;
+  margin-bottom: 0.75rem;
+  min-height: 1em;
+}
+
+.reopen-todo-card .actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.reopen-todo-card .actions button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: #fff;
+}
+
+.reopen-todo-card .actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.reopen-todo-card .btn-primary {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
+
+.reopen-todo-card .btn-primary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.reopen-todo-card .btn-cancel:hover:not(:disabled) {
+  background: #f0f0f0;
+}
