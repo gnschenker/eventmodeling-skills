@@ -13,7 +13,7 @@
 |---|---|---|
 | `create-todo-list` | state_change | done |
 | `rename-todo-list` | state_change | done |
-| `archive-todo-list` | state_change | pending |
+| `archive-todo-list` | state_change | done |
 | `delete-todo-list` | state_change | pending |
 | `create-todo` | state_change | pending |
 | `edit-todo` | state_change | pending |
@@ -55,6 +55,11 @@ _Entries are added here after each slice is merged. Format:_
 - **`makeQuery` unit test mock**: create a chainable plain-object proxy that satisfies the DCB API shape (`eventsOfType().where.key().equals()`) without importing the library. The mock is intentionally looser — `store.load` is mocked anyway, so the query object's value is irrelevant.
 - **CSS scoping**: bare element selectors (`h2`, `label`, `button`) in shadow-DOM CSS must be scoped to the form class (e.g. `.rename-todo-list-form h2`) to avoid unintended matches on future nested elements.
 - **No `observedAttributes` without `attributeChangedCallback`**: if the component only reads an attribute via `this.getAttribute()` at submission time, do not declare `observedAttributes` — it signals intent that isn't implemented.
+
+### archive-todo-list — 2026-03-02
+- **Confirmation-action pattern**: archive is a one-button action (no form fields). The component wraps a confirmation card rather than a form, but still follows the same shadow-DOM + `atl-` prefix + error-span pattern as other slices.
+- **Three-event DCB query for lifecycle**: querying `TodoListCreated` + `TodoListArchived` + `TodoListDeleted` in a single `store.load` call gives the handler the full lifecycle state to enforce all three conditions (exists, not archived, not deleted) in one round-trip.
+- **`archivedAt` format**: use `new Date().toISOString()` — produces a valid ISO 8601 UTC string that satisfies the EM `datetime` field type.
 
 ### scaffolding — 2026-03-02
 - `store.js` is the single place that creates the PG pool and `PostgresEventStore`. Slice handlers import store from `../../store.js`, never from `server.js` — importing `server.js` would trigger port binding and break tests.
