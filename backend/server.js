@@ -12,9 +12,11 @@ import createTodoRoute from './slices/create-todo/route.js';
 
 // --- Slice routes (state_view) ---
 import myTodoListsQuery from './slices/view-my-todo-lists/query.js';
+import todoListDetailQuery from './slices/view-todo-list-detail/query.js';
 
 // --- Projections ---
 import * as todoListsProjection from './slices/view-my-todo-lists/projection.js';
+import * as todoListDetailProjection from './slices/view-todo-list-detail/projection.js';
 
 const PORT = process.env.PORT ?? 3000;
 
@@ -42,6 +44,7 @@ app.use(createTodoRoute);
 
 // State-view routes
 app.use(myTodoListsQuery);
+app.use(todoListDetailQuery);
 
 // --- Bootstrap ---
 async function start() {
@@ -50,6 +53,9 @@ async function start() {
 
   await initProjection(pool, todoListsProjection);
   console.log('TodoListsProjection started');
+
+  await initProjection(pool, todoListDetailProjection);
+  console.log('TodoListDetailProjection started');
 
   app.listen(PORT, () => {
     console.log(`Backend listening on port ${PORT}`);
