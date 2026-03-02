@@ -44,13 +44,13 @@
   cursor: not-allowed;
 }
 
-.reopen-todo-card .btn-primary {
+.reopen-todo-card .actions .btn-primary {
   background: #2563eb;
   color: #fff;
   border-color: #2563eb;
 }
 
-.reopen-todo-card .btn-primary:hover:not(:disabled) {
+.reopen-todo-card .actions .btn-primary:hover:not(:disabled) {
   background: #1d4ed8;
 }
 

@@ -67,13 +67,13 @@ input[aria-invalid="true"] {
   cursor: not-allowed;
 }
 
-.btn-primary {
+.rename-todo-list-form .btn-primary {
   background: #2563eb;
   color: #fff;
   border-color: #2563eb;
 }
 
-.btn-primary:hover:not(:disabled) {
+.rename-todo-list-form .btn-primary:hover:not(:disabled) {
   background: #1d4ed8;
 }
 
