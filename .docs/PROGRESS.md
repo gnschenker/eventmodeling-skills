@@ -11,7 +11,7 @@
 
 | Slice | Type | Status |
 |---|---|---|
-| `create-todo-list` | state_change | pending |
+| `create-todo-list` | state_change | done |
 | `rename-todo-list` | state_change | pending |
 | `archive-todo-list` | state_change | pending |
 | `delete-todo-list` | state_change | pending |
@@ -41,6 +41,13 @@ _Entries are added here after each slice is merged. Format:_
 ### <slice-folder-name> — <date merged>
 - <lesson or decision worth recording>
 ```
+
+### create-todo-list — 2026-03-02
+- **Handler injection pattern**: `handler.js` has zero infrastructure imports — it receives `store` as a required `{ store }` parameter. `route.js` imports `store` and passes it in. This keeps handler unit-testable without `npm install` and must be followed by all future slices.
+- **`backend/errors.js`**: shared `ValidationError` class — import from here rather than re-defining per slice.
+- **`frontend/config.js`**: shared `API_BASE` — import from here for all `fetch` calls.
+- **All `import` statements in `server.js` must be at the top** (before any `const`/`if`/`app.*`). ESM hoists imports but ESLint `import/first` will flag mid-file imports.
+- **Custom event names** are prefixed with the component abbreviation (`ctl-created`, `ctl-cancel`) to avoid collisions across slices.
 
 ### scaffolding — 2026-03-02
 - `store.js` is the single place that creates the PG pool and `PostgresEventStore`. Slice handlers import store from `../../store.js`, never from `server.js` — importing `server.js` would trigger port binding and break tests.
