@@ -18,7 +18,7 @@
 | `create-todo` | state_change | done |
 | `edit-todo` | state_change | done |
 | `set-due-date-on-todo` | state_change | done |
-| `complete-todo` | state_change | pending |
+| `complete-todo` | state_change | done |
 | `reopen-todo` | state_change | pending |
 | `delete-todo` | state_change | pending |
 | `view-my-todo-lists` | state_view | done |
@@ -78,6 +78,11 @@ _Entries are added here after each slice is merged. Format:_
 - **CSS selector scoping**: all shadow-DOM CSS selectors must be prefixed with the form class (e.g. `.edit-todo-form .field`) to prevent bleeding into nested Web Components — per `rename-todo-list` lesson, now consistently enforced from this slice onward.
 - **`populate()` method**: the edit form exposes `populate({ title, description, priority })` so host pages can pre-fill fields from `TodoDetailProjection` before presenting the form.
 - **DCB query anchors on `TodoCreated` + `TodoDeleted`**: the handler only needs existence/deletion state, not the full edit history. Loading only these two event types is correct and minimal.
+
+### complete-todo — 2026-03-02
+- **Status fold over lifecycle events**: load `TodoCreated + TodoCompleted + TodoReopened + TodoDeleted + TodoMarkedOverdue` and fold in order. A switch-case on event type updating a single `status` variable is the clearest pattern for multi-state lifecycle handlers.
+- **POST for action routes**: `POST /todos/:todoId/complete` follows the `POST /todo-lists/:listId/archive` pattern — POST with a verb sub-resource for non-idempotent state-change actions.
+- **Confirmation-action UI**: no form fields, just confirm/cancel buttons — mirrors the `archive-todo-list` pattern.
 
 ### set-due-date-on-todo — 2026-03-02
 - **Lexicographic date comparison**: ISO 8601 `YYYY-MM-DD` strings compare correctly with `<` and `>=`. Today is valid (`dueDate < today` rejects only strictly past dates). No `Date` object parsing needed for a date-only comparison.
