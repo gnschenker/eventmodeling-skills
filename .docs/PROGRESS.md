@@ -12,7 +12,7 @@
 | Slice | Type | Status |
 |---|---|---|
 | `create-todo-list` | state_change | done |
-| `rename-todo-list` | state_change | pending |
+| `rename-todo-list` | state_change | done |
 | `archive-todo-list` | state_change | pending |
 | `delete-todo-list` | state_change | pending |
 | `create-todo` | state_change | pending |
@@ -48,6 +48,13 @@ _Entries are added here after each slice is merged. Format:_
 - **`frontend/config.js`**: shared `API_BASE` — import from here for all `fetch` calls.
 - **All `import` statements in `server.js` must be at the top** (before any `const`/`if`/`app.*`). ESM hoists imports but ESLint `import/first` will flag mid-file imports.
 - **Custom event names** are prefixed with the component abbreviation (`ctl-created`, `ctl-cancel`) to avoid collisions across slices.
+
+### rename-todo-list — 2026-03-02
+- **`query` injection**: handlers that need the DCB query builder receive it as `{ store, query }` in the deps object. `route.js` imports `query` from `es-dcb-library` and passes it in. This keeps the handler free of infrastructure imports and fully unit-testable.
+- **`es-dcb-library` local stub**: `backend/lib/es-dcb-library/` is a local package registered in `package.json` as `file:./lib/es-dcb-library`. It implements `PostgresEventStore`, the `query` DSL, and `ConcurrencyError`. All future slices get the real DCB implementation via this stub without any npm registry dependency.
+- **`makeQuery` unit test mock**: create a chainable plain-object proxy that satisfies the DCB API shape (`eventsOfType().where.key().equals()`) without importing the library. The mock is intentionally looser — `store.load` is mocked anyway, so the query object's value is irrelevant.
+- **CSS scoping**: bare element selectors (`h2`, `label`, `button`) in shadow-DOM CSS must be scoped to the form class (e.g. `.rename-todo-list-form h2`) to avoid unintended matches on future nested elements.
+- **No `observedAttributes` without `attributeChangedCallback`**: if the component only reads an attribute via `this.getAttribute()` at submission time, do not declare `observedAttributes` — it signals intent that isn't implemented.
 
 ### scaffolding — 2026-03-02
 - `store.js` is the single place that creates the PG pool and `PostgresEventStore`. Slice handlers import store from `../../store.js`, never from `server.js` — importing `server.js` would trigger port binding and break tests.

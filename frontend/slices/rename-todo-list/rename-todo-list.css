@@ -1,0 +1,82 @@
+.rename-todo-list-form {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1.5rem;
+  max-width: 480px;
+}
+
+.rename-todo-list-form h2 {
+  margin: 0 0 1.25rem;
+  font-size: 1.1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+}
+
+.rename-todo-list-form label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.required {
+  color: #c00;
+  margin-left: 2px;
+}
+
+input[type="text"] {
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 100%;
+}
+
+input[aria-invalid="true"] {
+  border-color: #c00;
+  outline-color: #c00;
+}
+
+.field-error {
+  font-size: 0.8rem;
+  color: #c00;
+  min-height: 1em;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.rename-todo-list-form button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: #fff;
+}
+
+.rename-todo-list-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.btn-cancel:hover:not(:disabled) {
+  background: #f0f0f0;
+}

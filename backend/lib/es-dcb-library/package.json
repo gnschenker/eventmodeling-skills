@@ -1,0 +1,10 @@
+{
+  "name": "es-dcb-library",
+  "version": "1.0.0",
+  "description": "Aggregateless event sourcing with DCB (local stub for development)",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  }
+}

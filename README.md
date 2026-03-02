@@ -122,6 +122,15 @@ Claude will write `hotel-booking-ui-mockups.md` to the same directory, containin
 
 ---
 
+## Todo List App — implemented slices
+
+| Slice | Endpoint | Frontend route |
+|---|---|---|
+| `create-todo-list` | `POST /todo-lists` | `#/create-todo-list` |
+| `rename-todo-list` | `PATCH /todo-lists/:listId/name` | `#/rename-todo-list` |
+
+---
+
 ## Example output
 
 The `.docs/` folder contains a worked example — a **Simple Todo List App** Event Model and its generated UI mockups:
