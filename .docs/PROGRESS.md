@@ -26,7 +26,7 @@
 | `view-active-todos` | state_view | done |
 | `view-completed-todos` | state_view | done |
 | `view-overdue-todos` | state_view | done |
-| `view-todo-detail` | state_view | pending |
+| `view-todo-detail` | state_view | done |
 | `view-notification-history` | state_view | pending |
 | `send-due-date-reminder-notification` | automation | pending |
 | `auto-mark-overdue-todos` | automation | pending |
@@ -119,6 +119,11 @@ _Entries are added here after each slice is merged. Format:_
 ### view-todo-list-detail — 2026-03-02
 - **Deleted rows are kept (status='deleted')**: unlike TodoListsProjection (which deletes rows on `TodoListDeleted`), the detail projection marks the row as `status='deleted'`. This allows `GET /todo-lists/:listId` to return meaningful data for audit and prevents confusion between "never existed" (404) and "existed but deleted" (still 404 in current implementation, but the data is available for future 410 responses).
 - **`GET /todo-lists/:listId` registered after `GET /todo-lists`**: Express matches routes in registration order. The specific `:listId` route must be registered after the bare `/todo-lists` route to avoid shadowing.
+
+### view-todo-detail — 2026-03-02
+- **Soft-delete on TodoDeleted**: unlike some other projections, `TodoDeleted` sets `status='deleted'` and keeps the row. This lets the detail view render meaningful data (status='deleted') rather than a 404 gap. Only `TodoListArchived`/`TodoListDeleted` hard-delete rows.
+- **GET /todos/:todoId registered after /todos/active|completed|overdue**: Express matches routes in registration order. The parameterized `:todoId` route must come after the fixed sub-paths to avoid shadowing them.
+- **Returning status='deleted' in the 200 response**: the frontend renders it with a `.status--deleted` CSS class (red). No special 410 handling was needed — the EM doesn't require it.
 
 ### scaffolding — 2026-03-02
 - `store.js` is the single place that creates the PG pool and `PostgresEventStore`. Slice handlers import store from `../../store.js`, never from `server.js` — importing `server.js` would trigger port binding and break tests.
