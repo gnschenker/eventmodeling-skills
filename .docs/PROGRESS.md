@@ -27,7 +27,7 @@
 | `view-completed-todos` | state_view | done |
 | `view-overdue-todos` | state_view | done |
 | `view-todo-detail` | state_view | done |
-| `view-notification-history` | state_view | pending |
+| `view-notification-history` | state_view | done |
 | `send-due-date-reminder-notification` | automation | pending |
 | `auto-mark-overdue-todos` | automation | pending |
 
@@ -119,6 +119,11 @@ _Entries are added here after each slice is merged. Format:_
 ### view-todo-list-detail — 2026-03-02
 - **Deleted rows are kept (status='deleted')**: unlike TodoListsProjection (which deletes rows on `TodoListDeleted`), the detail projection marks the row as `status='deleted'`. This allows `GET /todo-lists/:listId` to return meaningful data for audit and prevents confusion between "never existed" (404) and "existed but deleted" (still 404 in current implementation, but the data is available for future 410 responses).
 - **`GET /todo-lists/:listId` registered after `GET /todo-lists`**: Express matches routes in registration order. The specific `:listId` route must be registered after the bare `/todo-lists` route to avoid shadowing.
+
+### view-notification-history — 2026-03-02
+- **Append-only projection**: unlike most projections, `NotificationHistoryProjection` never hard-deletes rows — notification history is immutable. Only `TodoDueReminderSent` events are handled.
+- **Composite PK (todo_id, due_date)**: enforces the EM business rule "reminder must not have already been sent for this todo/due date combination" at the database level. `ON CONFLICT DO NOTHING` makes replay fully idempotent.
+- **Optional todoId filter in query**: the EM specifies filtering by todoId, implemented via an optional `?todoId=` query param. When omitted, all notifications are returned (no pagination needed for this demo).
 
 ### view-todo-detail — 2026-03-02
 - **Soft-delete on TodoDeleted**: unlike some other projections, `TodoDeleted` sets `status='deleted'` and keeps the row. This lets the detail view render meaningful data (status='deleted') rather than a 404 gap. Only `TodoListArchived`/`TodoListDeleted` hard-delete rows.
