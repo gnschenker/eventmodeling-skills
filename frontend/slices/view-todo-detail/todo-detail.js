@@ -57,7 +57,11 @@ class TodoDetail extends HTMLElement {
     this._created = this.shadowRoot.querySelector('.td-created');
     this._actions = this.shadowRoot.querySelector('.td-actions');
 
-    this._back.innerHTML = `<a class="td-back-link" href="javascript:history.back()">← Back</a>`;
+    this._back.innerHTML = `<a class="td-back-link" href="#">← Back</a>`;
+    this._back.querySelector('a').addEventListener('click', (e) => {
+      e.preventDefault();
+      history.back();
+    });
 
     this._load();
   }

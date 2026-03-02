@@ -29,6 +29,7 @@ template.innerHTML = `
 
 class TodoListDetail extends HTMLElement {
   connectedCallback() {
+    if (this.shadowRoot) return;
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 

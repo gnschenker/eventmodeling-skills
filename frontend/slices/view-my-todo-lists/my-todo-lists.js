@@ -13,7 +13,7 @@ template.innerHTML = `
           <option value="archived">Archived</option>
         </select>
         <button class="btn-refresh" title="Refresh">↻</button>
-        <a class="btn-primary btn-new-list" href="#/create-todo-list">New List</a>
+        <a class="btn-new-list" href="#/create-todo-list">New List</a>
       </div>
     </div>
 

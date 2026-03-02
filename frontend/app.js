@@ -16,7 +16,6 @@ import './slices/view-completed-todos/completed-todo-list.js';
 import './slices/view-overdue-todos/overdue-todo-list.js';
 import './slices/view-todo-detail/todo-detail.js';
 import './slices/view-notification-history/notification-history.js';
-import './shell/nav-bar.js';
 
 // ── Router ────────────────────────────────────────────────────────────────────
 
@@ -101,6 +100,18 @@ function render() {
 
   const { route, id } = parseHash(hash);
 
+  const ROUTES_REQUIRING_ID = new Set([
+    'view-todo-list-detail', 'view-todo-detail',
+    'rename-todo-list', 'archive-todo-list', 'delete-todo-list',
+    'create-todo', 'edit-todo', 'set-due-date-on-todo',
+    'complete-todo', 'reopen-todo', 'delete-todo',
+  ]);
+
+  if (ROUTES_REQUIRING_ID.has(route) && !id) {
+    location.replace('#/view-my-todo-lists');
+    return;
+  }
+
   if (VIEW_ROUTES[route]) {
     closeModal();
     appEl.innerHTML = VIEW_ROUTES[route](id);
@@ -122,6 +133,16 @@ function render() {
 
 window.addEventListener('hashchange', render);
 render();
+
+// ── View refresh helper ───────────────────────────────────────────────────────
+
+function refreshCurrentView() {
+  // Give history.back() time to settle, then reload the visible component
+  setTimeout(() => {
+    const view = appEl.firstElementChild;
+    if (view && typeof view._load === 'function') view._load();
+  }, 50);
+}
 
 // ── Navigation event wiring ───────────────────────────────────────────────────
 
@@ -147,6 +168,7 @@ document.addEventListener('ctl-created', (e) => {
 
 document.addEventListener('ct-created', () => {
   history.back();
+  refreshCurrentView();
 });
 
 document.addEventListener('dtl-deleted', () => {
@@ -154,12 +176,17 @@ document.addEventListener('dtl-deleted', () => {
 });
 
 document.addEventListener('dt-deleted', () => {
+  // Skip over the delete-todo modal entry in history to land on the list view
   history.go(-2);
+  refreshCurrentView();
 });
 
 // All "success" events that just need to go back (refreshes previous view)
 for (const ev of ['rtl-renamed', 'atl-archived', 'et-edited', 'sdd-set', 'ctd-completed', 'rt-reopened']) {
-  document.addEventListener(ev, () => history.back());
+  document.addEventListener(ev, () => {
+    history.back();
+    refreshCurrentView();
+  });
 }
 
 // All "cancel" events — close modal
