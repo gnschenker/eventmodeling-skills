@@ -137,6 +137,15 @@ _Entries are added here after each slice is merged. Format:_
 - **Composite PK (todo_id, due_date)**: enforces the EM business rule "reminder must not have already been sent for this todo/due date combination" at the database level. `ON CONFLICT DO NOTHING` makes replay fully idempotent.
 - **Optional todoId filter in query**: the EM specifies filtering by todoId, implemented via an optional `?todoId=` query param. When omitted, all notifications are returned (no pagination needed for this demo).
 
+### ui-shell-router-navigation — 2026-03-02
+- **Hash router pattern**: `parseHash(hash)` splits `#/route/id` into `{ route, id }`. `VIEW_ROUTES` map renders into `#app`; `ACTION_ROUTES` map renders into a modal overlay. Both maps use `(id) => html string` factory functions.
+- **Modal via plain functions, not a custom element**: `openModal(html)` / `closeModal()` manipulate `#modal` div directly. Backdrop click and Escape key both call `history.back()` so the URL is always the source of truth.
+- **`refreshCurrentView()` after `history.back()`**: when an action modal closes via `history.back()`, the hash doesn't change so `hashchange` never fires. A 50ms `setTimeout` after `history.back()` finds `appEl.firstElementChild` and calls `_load()` if available to re-fetch fresh data.
+- **ROUTES_REQUIRING_ID guard**: routes that embed an id (e.g. `view-todo-list-detail`, `create-todo`) redirect to `#/view-my-todo-lists` if the id segment is absent, preventing confusing `list-id="null"` fetch errors.
+- **No `javascript:` hrefs**: back links use `href="#"` with a click listener calling `e.preventDefault(); history.back()` — safe for any CSP policy.
+- **nav-bar.js loaded via `<script>` in index.html only**: loading it in both `index.html` and `app.js` is redundant (browser module cache deduplicates), but was flagged as a maintenance trap. Keep only the `<script>` tag in `index.html`.
+- **Shadow DOM double-attach guard**: `if (this.shadowRoot) return;` must be the first line of every `connectedCallback` that calls `attachShadow`. Missing it throws `NotSupportedError` when the element is reconnected.
+
 ### view-todo-detail — 2026-03-02
 - **Soft-delete on TodoDeleted**: unlike some other projections, `TodoDeleted` sets `status='deleted'` and keeps the row. This lets the detail view render meaningful data (status='deleted') rather than a 404 gap. Only `TodoListArchived`/`TodoListDeleted` hard-delete rows.
 - **GET /todos/:todoId registered after /todos/active|completed|overdue**: Express matches routes in registration order. The parameterized `:todoId` route must come after the fixed sub-paths to avoid shadowing them.
