@@ -90,16 +90,15 @@ export async function initProjection(pool, projection, { intervalMs = 500 } = {}
     }
   }
 
-  function scheduleNext() {
-    setTimeout(async () => {
-      try {
-        await poll();
-      } catch (err) {
-        console.error(`[${NAME}] unexpected poll error:`, err);
-      }
-      scheduleNext();
-    }, intervalMs);
+  // Poll immediately at startup (catch up any existing events), then repeat.
+  async function loop() {
+    try {
+      await poll();
+    } catch (err) {
+      console.error(`[${NAME}] unexpected poll error:`, err);
+    }
+    setTimeout(loop, intervalMs);
   }
 
-  scheduleNext();
+  loop();
 }
