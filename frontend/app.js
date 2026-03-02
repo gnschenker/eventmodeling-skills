@@ -1,12 +1,10 @@
 // App entry point.
-//
-// As slices are implemented, import their Web Components here:
-//   import './slices/create-todo-list/create-todo-list.js';
-//
-// Simple hash-based router — each slice registers its own route.
+// Import slice Web Components as they are implemented.
+import './slices/create-todo-list/create-todo-list.js';
 
+// Simple hash-based router — each slice registers its own route.
 const routes = {
-  // '#/todo-lists': '<todo-lists-screen></todo-lists-screen>',
+  '#/create-todo-list': '<create-todo-list></create-todo-list>',
 };
 
 function render() {

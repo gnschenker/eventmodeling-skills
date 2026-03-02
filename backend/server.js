@@ -2,6 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import { store } from './store.js';
 
+// --- Slice routes ---
+import createTodoListRoute from './slices/create-todo-list/route.js';
+
 const PORT = process.env.PORT ?? 3000;
 
 if (!process.env.DATABASE_URL) {
@@ -19,10 +22,7 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Slice routes are registered here as slices are implemented.
-// Example (added per slice):
-//   import createTodoListRoute from './slices/create-todo-list/route.js';
-//   app.use(createTodoListRoute);
+app.use(createTodoListRoute);
 
 // --- Bootstrap ---
 async function start() {
