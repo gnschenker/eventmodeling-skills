@@ -8,6 +8,7 @@ import renameTodoListRoute from './slices/rename-todo-list/route.js';
 import archiveTodoListRoute from './slices/archive-todo-list/route.js';
 import deleteTodoListRoute from './slices/delete-todo-list/route.js';
 import createTodoRoute from './slices/create-todo/route.js';
+import editTodoRoute from './slices/edit-todo/route.js';
 
 const PORT = process.env.PORT ?? 3000;
 
@@ -31,6 +32,7 @@ app.use(renameTodoListRoute);
 app.use(archiveTodoListRoute);
 app.use(deleteTodoListRoute);
 app.use(createTodoRoute);
+app.use(editTodoRoute);
 
 // --- Bootstrap ---
 async function start() {
