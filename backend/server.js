@@ -1,25 +1,17 @@
 import express from 'express';
-import pg from 'pg';
-import { PostgresEventStore } from 'es-dcb-library';
-
-const { Pool } = pg;
+import cors from 'cors';
+import { store } from './store.js';
 
 const PORT = process.env.PORT ?? 3000;
-const DATABASE_URL = process.env.DATABASE_URL;
 
-if (!DATABASE_URL) {
+if (!process.env.DATABASE_URL) {
   console.error('DATABASE_URL environment variable is required');
   process.exit(1);
 }
 
-// --- Database pool ---
-const pool = new Pool({ connectionString: DATABASE_URL });
-
-// --- Event store ---
-export const store = new PostgresEventStore({ pool });
-
 // --- Express app ---
 const app = express();
+app.use(cors({ origin: process.env.FRONTEND_ORIGIN ?? 'http://localhost:8080' }));
 app.use(express.json());
 
 // Health check
