@@ -2,11 +2,13 @@
 // Import slice Web Components as they are implemented.
 import './slices/create-todo-list/create-todo-list.js';
 import './slices/rename-todo-list/rename-todo-list.js';
+import './slices/archive-todo-list/archive-todo-list.js';
 
 // Simple hash-based router — each slice registers its own route.
 const routes = {
   '#/create-todo-list': '<create-todo-list></create-todo-list>',
   '#/rename-todo-list': '<rename-todo-list list-id="demo-list-id"></rename-todo-list>',
+  '#/archive-todo-list': '<archive-todo-list list-id="demo-list-id"></archive-todo-list>',
 };
 
 function render() {
