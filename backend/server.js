@@ -1,13 +1,20 @@
 import express from 'express';
 import cors from 'cors';
-import { store } from './store.js';
+import { store, pool } from './store.js';
+import { initProjection } from './projection-runner.js';
 
-// --- Slice routes ---
+// --- Slice routes (state_change) ---
 import createTodoListRoute from './slices/create-todo-list/route.js';
 import renameTodoListRoute from './slices/rename-todo-list/route.js';
 import archiveTodoListRoute from './slices/archive-todo-list/route.js';
 import deleteTodoListRoute from './slices/delete-todo-list/route.js';
 import createTodoRoute from './slices/create-todo/route.js';
+
+// --- Slice routes (state_view) ---
+import myTodoListsQuery from './slices/view-my-todo-lists/query.js';
+
+// --- Projections ---
+import * as todoListsProjection from './slices/view-my-todo-lists/projection.js';
 
 const PORT = process.env.PORT ?? 3000;
 
@@ -26,16 +33,23 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
+// State-change routes
 app.use(createTodoListRoute);
 app.use(renameTodoListRoute);
 app.use(archiveTodoListRoute);
 app.use(deleteTodoListRoute);
 app.use(createTodoRoute);
 
+// State-view routes
+app.use(myTodoListsQuery);
+
 // --- Bootstrap ---
 async function start() {
   await store.initializeSchema();
   console.log('Event store schema initialised');
+
+  await initProjection(pool, todoListsProjection);
+  console.log('TodoListsProjection started');
 
   app.listen(PORT, () => {
     console.log(`Backend listening on port ${PORT}`);
