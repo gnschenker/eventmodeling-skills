@@ -14,7 +14,7 @@
 | `create-todo-list` | state_change | done |
 | `rename-todo-list` | state_change | done |
 | `archive-todo-list` | state_change | done |
-| `delete-todo-list` | state_change | pending |
+| `delete-todo-list` | state_change | done |
 | `create-todo` | state_change | pending |
 | `edit-todo` | state_change | pending |
 | `set-due-date-on-todo` | state_change | pending |
@@ -60,6 +60,12 @@ _Entries are added here after each slice is merged. Format:_
 - **Confirmation-action pattern**: archive is a one-button action (no form fields). The component wraps a confirmation card rather than a form, but still follows the same shadow-DOM + `atl-` prefix + error-span pattern as other slices.
 - **Three-event DCB query for lifecycle**: querying `TodoListCreated` + `TodoListArchived` + `TodoListDeleted` in a single `store.load` call gives the handler the full lifecycle state to enforce all three conditions (exists, not archived, not deleted) in one round-trip.
 - **`archivedAt` format**: use `new Date().toISOString()` — produces a valid ISO 8601 UTC string that satisfies the EM `datetime` field type.
+
+### delete-todo-list — 2026-03-02
+- **`TodoDeleted` payload has no `listId`**: per the EM spec, `TodoDeleted` carries only `{ todoId, deletedAt }`. Querying `eventsOfType('TodoDeleted').where.key('listId').equals(listId)` returns zero rows in Postgres because no `listId` key is ever indexed in `event_keys` for those events. Any future handler that needs to reason about deleted todos must query by `todoId`, not by `listId`.
+- **Two-pass load strategy when event payloads lack a shared key**: when pass 1 must collect IDs (here: `todoId`s from `TodoCreated`), and pass 2 must query a related event type that lacks the top-level key (here: `TodoDeleted` lacks `listId`), issue a second `store.load` that ORs one `(type, 'todoId', value)` matcher per collected ID. The DCB library's SQL OR expansion handles this correctly.
+- **Optimistic concurrency anchored to pass 1**: use `{ query: q1, expectedVersion: version }` from the list-scoped pass. This is the correct scope — it protects against concurrent list-level writes and against new `TodoCreated` events being appended between check and append.
+- **`makeStore` mock for two-pass handlers**: the test helper accepts `pass1Events`/`pass2Events`; when `pass2Events` is `null` the mock throws on any unexpected second `load` call, enforcing that pass 2 is truly skipped in error paths and in the zero-todos path.
 
 ### scaffolding — 2026-03-02
 - `store.js` is the single place that creates the PG pool and `PostgresEventStore`. Slice handlers import store from `../../store.js`, never from `server.js` — importing `server.js` would trigger port binding and break tests.
