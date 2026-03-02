@@ -41,6 +41,20 @@
   background: #f0f0f0;
 }
 
+.btn-new-list {
+  padding: 0.35rem 0.75rem;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-new-list:hover {
+  background: #1d4ed8;
+}
+
 .loading {
   color: #666;
   font-size: 0.9rem;

@@ -7,6 +7,8 @@ template.innerHTML = `
     <div class="loading" hidden>Loading…</div>
     <div class="error" aria-live="polite"></div>
 
+    <div class="td-back"></div>
+
     <div class="detail-card" hidden>
       <h2 class="td-title"></h2>
       <dl class="td-fields">
@@ -31,6 +33,8 @@ template.innerHTML = `
           <dd class="td-created"></dd>
         </div>
       </dl>
+
+      <div class="td-actions"></div>
     </div>
   </div>
 `;
@@ -43,6 +47,7 @@ class TodoDetail extends HTMLElement {
 
     this._loading = this.shadowRoot.querySelector('.loading');
     this._error = this.shadowRoot.querySelector('.error');
+    this._back = this.shadowRoot.querySelector('.td-back');
     this._card = this.shadowRoot.querySelector('.detail-card');
     this._title = this.shadowRoot.querySelector('.td-title');
     this._status = this.shadowRoot.querySelector('.td-status');
@@ -50,6 +55,13 @@ class TodoDetail extends HTMLElement {
     this._dueDate = this.shadowRoot.querySelector('.td-due-date');
     this._description = this.shadowRoot.querySelector('.td-description');
     this._created = this.shadowRoot.querySelector('.td-created');
+    this._actions = this.shadowRoot.querySelector('.td-actions');
+
+    this._back.innerHTML = `<a class="td-back-link" href="#">← Back</a>`;
+    this._back.querySelector('a').addEventListener('click', (e) => {
+      e.preventDefault();
+      history.back();
+    });
 
     this._load();
   }
@@ -101,6 +113,23 @@ class TodoDetail extends HTMLElement {
     this._dueDate.textContent = detail.dueDate ?? '—';
     this._description.textContent = detail.description || '—';
     this._created.textContent = detail.createdAt ? detail.createdAt.slice(0, 10) : '—';
+
+    const id = this.todoId;
+    const s = detail.status;
+    const isActive = s === 'active';
+    const isOverdue = s === 'overdue';
+    const isCompleted = s === 'completed';
+    const isDeleted = s === 'deleted';
+
+    this._actions.innerHTML = `
+      <div class="action-bar">
+        ${!isDeleted ? `<a class="btn-action" href="#/edit-todo/${id}">Edit</a>` : ''}
+        ${(isActive || isOverdue) ? `<a class="btn-action" href="#/set-due-date-on-todo/${id}">Set Due Date</a>` : ''}
+        ${(isActive || isOverdue) ? `<a class="btn-action" href="#/complete-todo/${id}">Complete</a>` : ''}
+        ${isCompleted ? `<a class="btn-action" href="#/reopen-todo/${id}">Reopen</a>` : ''}
+        ${!isDeleted ? `<a class="btn-action btn-danger" href="#/delete-todo/${id}">Delete</a>` : ''}
+      </div>
+    `;
 
     this._card.hidden = false;
   }

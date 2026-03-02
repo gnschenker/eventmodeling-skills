@@ -5,8 +5,40 @@
 .active-todo-list .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 0.75rem;
   margin-bottom: 1rem;
+}
+
+.atl-back-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.atl-back-link:hover {
+  text-decoration: underline;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.btn-add-todo {
+  padding: 0.3rem 0.75rem;
+  background: #2563eb;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-add-todo:hover {
+  background: #1d4ed8;
 }
 
 .active-todo-list h2 {

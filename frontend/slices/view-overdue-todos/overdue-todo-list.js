@@ -5,6 +5,7 @@ template.innerHTML = `
   <link rel="stylesheet" href="/slices/view-overdue-todos/overdue-todo-list.css" />
   <div class="overdue-todo-list">
     <div class="header">
+      <a class="otl-back-link" href="#/view-my-todo-lists">← Back</a>
       <h2>Overdue Todos</h2>
       <button class="btn-refresh" title="Refresh">↻</button>
     </div>
@@ -39,12 +40,19 @@ class OverdueTodoList extends HTMLElement {
     this._tbody = this.shadowRoot.querySelector('tbody');
     this._emptyState = this.shadowRoot.querySelector('.empty-state');
 
+    this._backLink = this.shadowRoot.querySelector('.otl-back-link');
     this.shadowRoot.querySelector('.btn-refresh').addEventListener('click', () => this._load());
+    this._updateBackLink();
     this._load();
   }
 
   get listId() {
     return this.getAttribute('list-id');
+  }
+
+  _updateBackLink() {
+    const id = this.listId;
+    this._backLink.href = id ? `#/view-todo-list-detail/${id}` : '#/view-my-todo-lists';
   }
 
   async _load() {
