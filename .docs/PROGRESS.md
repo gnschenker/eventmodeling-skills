@@ -42,4 +42,8 @@ _Entries are added here after each slice is merged. Format:_
 - <lesson or decision worth recording>
 ```
 
-<!-- Entries will appear below as slices are completed -->
+### scaffolding — 2026-03-02
+- `store.js` is the single place that creates the PG pool and `PostgresEventStore`. Slice handlers import store from `../../store.js`, never from `server.js` — importing `server.js` would trigger port binding and break tests.
+- CORS is configured in `server.js` with `FRONTEND_ORIGIN` env var (defaults to `http://localhost:8080`).
+- `node --watch` (Node 20 built-in) is the dev server — no nodemon needed.
+- `test:unit` / `test:integration` scripts filter by `--test-name-pattern`; test names must include the word "unit" or "integration" accordingly.
