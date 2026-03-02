@@ -1,0 +1,59 @@
+.complete-todo-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1.5rem;
+  max-width: 480px;
+}
+
+.complete-todo-card h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+}
+
+.complete-todo-card p {
+  margin: 0 0 1.25rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.complete-todo-card .form-error {
+  font-size: 0.85rem;
+  color: #c00;
+  margin-bottom: 0.75rem;
+  min-height: 1em;
+}
+
+.complete-todo-card .actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.complete-todo-card .actions button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: #fff;
+}
+
+.complete-todo-card .actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.complete-todo-card .btn-primary {
+  background: #16a34a;
+  color: #fff;
+  border-color: #16a34a;
+}
+
+.complete-todo-card .btn-primary:hover:not(:disabled) {
+  background: #15803d;
+}
+
+.complete-todo-card .btn-cancel:hover:not(:disabled) {
+  background: #f0f0f0;
+}

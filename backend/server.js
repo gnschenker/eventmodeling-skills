@@ -11,6 +11,7 @@ import deleteTodoListRoute from './slices/delete-todo-list/route.js';
 import createTodoRoute from './slices/create-todo/route.js';
 import editTodoRoute from './slices/edit-todo/route.js';
 import setTodoDueDateRoute from './slices/set-due-date-on-todo/route.js';
+import completeTodoRoute from './slices/complete-todo/route.js';
 
 // --- Slice routes (state_view) ---
 import myTodoListsQuery from './slices/view-my-todo-lists/query.js';
@@ -45,6 +46,7 @@ app.use(deleteTodoListRoute);
 app.use(createTodoRoute);
 app.use(editTodoRoute);
 app.use(setTodoDueDateRoute);
+app.use(completeTodoRoute);
 
 // State-view routes
 app.use(myTodoListsQuery);
