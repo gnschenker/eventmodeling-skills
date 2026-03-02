@@ -1,0 +1,60 @@
+.delete-todo-list-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1.5rem;
+  max-width: 480px;
+}
+
+.delete-todo-list-card h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+}
+
+.confirmation-text {
+  margin: 0 0 1.25rem;
+  font-size: 1rem;
+  color: #333;
+}
+
+.error-msg {
+  display: block;
+  font-size: 0.8rem;
+  color: #c00;
+  min-height: 1em;
+  margin-bottom: 0.75rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.delete-todo-list-card button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: #fff;
+}
+
+.delete-todo-list-card button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: #fff;
+  border-color: #dc2626;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.btn-cancel:hover:not(:disabled) {
+  background: #f0f0f0;
+}
