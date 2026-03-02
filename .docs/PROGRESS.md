@@ -28,7 +28,7 @@
 | `view-overdue-todos` | state_view | done |
 | `view-todo-detail` | state_view | done |
 | `view-notification-history` | state_view | done |
-| `send-due-date-reminder-notification` | automation | pending |
+| `send-due-date-reminder-notification` | automation | done |
 | `auto-mark-overdue-todos` | automation | pending |
 
 ---
@@ -119,6 +119,13 @@ _Entries are added here after each slice is merged. Format:_
 ### view-todo-list-detail — 2026-03-02
 - **Deleted rows are kept (status='deleted')**: unlike TodoListsProjection (which deletes rows on `TodoListDeleted`), the detail projection marks the row as `status='deleted'`. This allows `GET /todo-lists/:listId` to return meaningful data for audit and prevents confusion between "never existed" (404) and "existed but deleted" (still 404 in current implementation, but the data is available for future 410 responses).
 - **`GET /todo-lists/:listId` registered after `GET /todo-lists`**: Express matches routes in registration order. The specific `:listId` route must be registered after the bare `/todo-lists` route to avoid shadowing.
+
+### send-due-date-reminder-notification — 2026-03-02
+- **Automation job pattern**: `job.js` exports `runJob({ pool, store, query })` — same dependency injection as handlers, fully testable without a running server. `server.js` schedules via `setInterval` and runs once on startup.
+- **`query` imported at server.js top level**: the DCB `query` builder is imported from `es-dcb-library` in `server.js` and passed to job deps. This avoids circular imports and keeps job.js free of infrastructure imports.
+- **Two-step approach**: step 1 queries the projection (SQL) to find candidates; step 2 uses DCB `store.load + expectedVersion` to enforce idempotency and handle concurrency. Separation keeps each concern clean.
+- **ConcurrencyError swallowing pattern**: `if (err.name !== 'ConcurrencyError')` — identified by name (not instanceof) to avoid coupling to the library's class hierarchy. Continue the loop so other todos are still processed.
+- **No user model yet**: `DEMO_USER_ID` placeholder UUID documented inline. When auth is added, replace with the actual userId from the todo's owner.
 
 ### view-notification-history — 2026-03-02
 - **Append-only projection**: unlike most projections, `NotificationHistoryProjection` never hard-deletes rows — notification history is immutable. Only `TodoDueReminderSent` events are handled.
