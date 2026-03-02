@@ -19,7 +19,7 @@
 | `edit-todo` | state_change | done |
 | `set-due-date-on-todo` | state_change | done |
 | `complete-todo` | state_change | done |
-| `reopen-todo` | state_change | pending |
+| `reopen-todo` | state_change | done |
 | `delete-todo` | state_change | pending |
 | `view-my-todo-lists` | state_view | done |
 | `view-todo-list-detail` | state_view | done |
@@ -78,6 +78,9 @@ _Entries are added here after each slice is merged. Format:_
 - **CSS selector scoping**: all shadow-DOM CSS selectors must be prefixed with the form class (e.g. `.edit-todo-form .field`) to prevent bleeding into nested Web Components — per `rename-todo-list` lesson, now consistently enforced from this slice onward.
 - **`populate()` method**: the edit form exposes `populate({ title, description, priority })` so host pages can pre-fill fields from `TodoDetailProjection` before presenting the form.
 - **DCB query anchors on `TodoCreated` + `TodoDeleted`**: the handler only needs existence/deletion state, not the full edit history. Loading only these two event types is correct and minimal.
+
+### reopen-todo — 2026-03-02
+- **Mirror of complete-todo pattern**: same five-event lifecycle fold; narrower guard (`status !== 'completed'` rather than `!== 'active' && !== 'overdue'`). The fold logic is intentionally duplicated per slice (vertical slice isolation) rather than shared.
 
 ### complete-todo — 2026-03-02
 - **Status fold over lifecycle events**: load `TodoCreated + TodoCompleted + TodoReopened + TodoDeleted + TodoMarkedOverdue` and fold in order. A switch-case on event type updating a single `status` variable is the clearest pattern for multi-state lifecycle handlers.
