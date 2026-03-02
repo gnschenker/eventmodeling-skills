@@ -22,7 +22,7 @@
 | `reopen-todo` | state_change | pending |
 | `delete-todo` | state_change | pending |
 | `view-my-todo-lists` | state_view | done |
-| `view-todo-list-detail` | state_view | pending |
+| `view-todo-list-detail` | state_view | done |
 | `view-active-todos` | state_view | pending |
 | `view-completed-todos` | state_view | pending |
 | `view-overdue-todos` | state_view | pending |
@@ -78,6 +78,10 @@ _Entries are added here after each slice is merged. Format:_
 - **No npm deps in test files**: `express` and `pg` are not installed locally (only in Docker). Test files must only import local files with no npm dependencies. `query.test.js` imports from `projection.js` (no npm deps); the Express route in `query.js` is thin glue that is not unit-tested.
 - **Idempotent projection inserts**: `TodoListCreated` uses `ON CONFLICT (list_id) DO NOTHING` so replaying events never duplicates rows.
 - **Deleted lists are removed**: `TodoListDeleted` removes the row from `todo_lists_projection`. The list screen only shows active/archived lists.
+
+### view-todo-list-detail — 2026-03-02
+- **Deleted rows are kept (status='deleted')**: unlike TodoListsProjection (which deletes rows on `TodoListDeleted`), the detail projection marks the row as `status='deleted'`. This allows `GET /todo-lists/:listId` to return meaningful data for audit and prevents confusion between "never existed" (404) and "existed but deleted" (still 404 in current implementation, but the data is available for future 410 responses).
+- **`GET /todo-lists/:listId` registered after `GET /todo-lists`**: Express matches routes in registration order. The specific `:listId` route must be registered after the bare `/todo-lists` route to avoid shadowing.
 
 ### scaffolding — 2026-03-02
 - `store.js` is the single place that creates the PG pool and `PostgresEventStore`. Slice handlers import store from `../../store.js`, never from `server.js` — importing `server.js` would trigger port binding and break tests.
