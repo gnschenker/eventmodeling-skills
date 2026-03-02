@@ -16,7 +16,7 @@
 | `archive-todo-list` | state_change | done |
 | `delete-todo-list` | state_change | done |
 | `create-todo` | state_change | done |
-| `edit-todo` | state_change | pending |
+| `edit-todo` | state_change | done |
 | `set-due-date-on-todo` | state_change | pending |
 | `complete-todo` | state_change | pending |
 | `reopen-todo` | state_change | pending |
@@ -71,6 +71,11 @@ _Entries are added here after each slice is merged. Format:_
 - **Priority defaulting before validation**: resolve the priority to `'Medium'` when the field is absent or empty, then validate the resolved value. This avoids a false validation failure when the client omits the field.
 - **list-id attribute pattern**: the `<create-todo>` Web Component reads `list-id` via `this.getAttribute('list-id')` at submit time. No `observedAttributes` needed since the attribute is only needed on submit, not on change.
 - **Optimistic concurrency on the list query**: the `TodoCreated` event is appended with `{ query: q, expectedVersion: version }` where `q` covers `TodoListCreated` + `TodoListDeleted` for the given `listId`. This prevents a race between two concurrent `CreateTodo` commands on a list that gets deleted between check and append.
+
+### edit-todo — 2026-03-02
+- **Edit validates everything explicitly**: unlike `create-todo` (which defaults priority to `'Medium'`), the edit handler requires all fields to be provided and valid. An empty priority is a validation error, not a default.
+- **`connectedCallback` guard for re-use**: the `<edit-todo>` Web Component checks `if (this.shadowRoot) return` at the top of `connectedCallback` to prevent double-initialisation when the element is moved in the DOM.
+- **`populate()` method for pre-filling**: the component exposes a `populate({ title, description, priority })` method so the parent view can pre-fill the form after loading the current todo data, rather than requiring the component to fetch the data itself.
 
 ### view-my-todo-lists — 2026-03-02
 - **Polling-based projection runner**: `backend/projection-runner.js` is the shared infrastructure for all state_view slices. Each projection exports `NAME`, `SOURCE_EVENTS`, `initSchema(client)`, and `handleEvent(event, client)`. The runner creates a `projection_checkpoints` table, calls `initSchema`, then polls `events` every 500 ms for new events above the checkpoint, processing each in its own transaction.
