@@ -131,6 +131,7 @@ Claude will write `hotel-booking-ui-mockups.md` to the same directory, containin
 | `archive-todo-list` | `POST /todo-lists/:listId/archive` | `#/archive-todo-list` |
 | `delete-todo-list` | `DELETE /todo-lists/:listId` | `#/delete-todo-list` |
 | `create-todo` | `POST /todo-lists/:listId/todos` | `#/create-todo` |
+| `edit-todo` | `PATCH /todos/:todoId` | `#/edit-todo` |
 | `view-my-todo-lists` | `GET /todo-lists?status=active|archived` | `#/view-my-todo-lists` |
 | `view-todo-list-detail` | `GET /todo-lists/:listId` | `#/view-todo-list-detail` |
 

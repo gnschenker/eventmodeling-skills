@@ -1,0 +1,97 @@
+.edit-todo-form {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 1.5rem;
+  max-width: 480px;
+}
+
+.edit-todo-form h2 {
+  margin: 0 0 1.25rem;
+  font-size: 1.1rem;
+}
+
+.edit-todo-form .field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+}
+
+.edit-todo-form .field label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.edit-todo-form .required {
+  color: #c00;
+  margin-left: 2px;
+}
+
+.edit-todo-form .field input[type="text"],
+.edit-todo-form .field textarea,
+.edit-todo-form .field select {
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.edit-todo-form .field textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.edit-todo-form .field input[aria-invalid="true"] {
+  border-color: #c00;
+  outline-color: #c00;
+}
+
+.edit-todo-form .field-error {
+  font-size: 0.8rem;
+  color: #c00;
+  min-height: 1em;
+}
+
+.edit-todo-form .form-error {
+  font-size: 0.85rem;
+  color: #c00;
+  margin-bottom: 0.75rem;
+  min-height: 1em;
+}
+
+.edit-todo-form .actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.edit-todo-form .actions button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: #fff;
+}
+
+.edit-todo-form .actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.edit-todo-form .btn-primary {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
+
+.edit-todo-form .btn-primary:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.edit-todo-form .btn-cancel:hover:not(:disabled) {
+  background: #f0f0f0;
+}

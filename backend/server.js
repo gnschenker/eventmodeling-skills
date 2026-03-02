@@ -9,6 +9,7 @@ import renameTodoListRoute from './slices/rename-todo-list/route.js';
 import archiveTodoListRoute from './slices/archive-todo-list/route.js';
 import deleteTodoListRoute from './slices/delete-todo-list/route.js';
 import createTodoRoute from './slices/create-todo/route.js';
+import editTodoRoute from './slices/edit-todo/route.js';
 
 // --- Slice routes (state_view) ---
 import myTodoListsQuery from './slices/view-my-todo-lists/query.js';
@@ -41,6 +42,7 @@ app.use(renameTodoListRoute);
 app.use(archiveTodoListRoute);
 app.use(deleteTodoListRoute);
 app.use(createTodoRoute);
+app.use(editTodoRoute);
 
 // State-view routes
 app.use(myTodoListsQuery);
