@@ -23,7 +23,7 @@
 | `delete-todo` | state_change | done |
 | `view-my-todo-lists` | state_view | done |
 | `view-todo-list-detail` | state_view | done |
-| `view-active-todos` | state_view | pending |
+| `view-active-todos` | state_view | done |
 | `view-completed-todos` | state_view | pending |
 | `view-overdue-todos` | state_view | pending |
 | `view-todo-detail` | state_view | pending |
@@ -78,6 +78,11 @@ _Entries are added here after each slice is merged. Format:_
 - **CSS selector scoping**: all shadow-DOM CSS selectors must be prefixed with the form class (e.g. `.edit-todo-form .field`) to prevent bleeding into nested Web Components — per `rename-todo-list` lesson, now consistently enforced from this slice onward.
 - **`populate()` method**: the edit form exposes `populate({ title, description, priority })` so host pages can pre-fill fields from `TodoDetailProjection` before presenting the form.
 - **DCB query anchors on `TodoCreated` + `TodoDeleted`**: the handler only needs existence/deletion state, not the full edit history. Loading only these two event types is correct and minimal.
+
+### view-active-todos — 2026-03-02
+- **Soft-delete on TodoCompleted**: the projection does NOT delete the row when a todo is completed. Instead it sets `status='completed'`. This preserves the row for TodoReopened to UPDATE back to 'active'. The query filters to `status IN ('active','overdue')`.
+- **Hard-delete on TodoListArchived and TodoListDeleted**: both events DELETE all rows for the given `list_id` — active todos in an archived or deleted list are no longer relevant.
+- **Priority ordering in SQL**: `CASE priority WHEN 'High' THEN 1 WHEN 'Medium' THEN 2 ELSE 3 END ASC` is the correct way to impose a custom sort order in PostgreSQL without a separate enum type.
 
 ### delete-todo — 2026-03-02
 - **Single-pass load (unlike delete-todo-list)**: `TodoDeleted` events carry `todoId` directly, so the handler can load `TodoCreated + TodoDeleted` in a single `store.load` call — no two-pass strategy needed. The two-pass approach from `delete-todo-list` was only required because `TodoDeleted` lacked `listId`.
