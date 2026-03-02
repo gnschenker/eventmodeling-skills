@@ -142,6 +142,7 @@ Claude will write `hotel-booking-ui-mockups.md` to the same directory, containin
 | `view-todo-detail` | `GET /todos/:todoId` | `#/view-todo-detail` |
 | `view-my-todo-lists` | `GET /todo-lists?status=active|archived` | `#/view-my-todo-lists` |
 | `view-todo-list-detail` | `GET /todo-lists/:listId` | `#/view-todo-list-detail` |
+| `view-notification-history` | `GET /notifications` | `#/view-notification-history` |
 
 ---
 

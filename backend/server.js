@@ -22,6 +22,7 @@ import activeTodosQuery from './slices/view-active-todos/query.js';
 import completedTodosQuery from './slices/view-completed-todos/query.js';
 import overdueTodosQuery from './slices/view-overdue-todos/query.js';
 import todoDetailQuery from './slices/view-todo-detail/query.js';
+import notificationHistoryQuery from './slices/view-notification-history/query.js';
 
 // --- Projections ---
 import * as todoListsProjection from './slices/view-my-todo-lists/projection.js';
@@ -30,6 +31,7 @@ import * as activeTodosProjection from './slices/view-active-todos/projection.js
 import * as completedTodosProjection from './slices/view-completed-todos/projection.js';
 import * as overdueTodosProjection from './slices/view-overdue-todos/projection.js';
 import * as todoDetailProjection from './slices/view-todo-detail/projection.js';
+import * as notificationHistoryProjection from './slices/view-notification-history/projection.js';
 
 const PORT = process.env.PORT ?? 3000;
 
@@ -67,6 +69,7 @@ app.use(activeTodosQuery);
 app.use(completedTodosQuery);
 app.use(overdueTodosQuery);
 app.use(todoDetailQuery);
+app.use(notificationHistoryQuery);
 
 // --- Bootstrap ---
 async function start() {
@@ -90,6 +93,9 @@ async function start() {
 
   await initProjection(pool, todoDetailProjection);
   console.log('TodoDetailProjection started');
+
+  await initProjection(pool, notificationHistoryProjection);
+  console.log('NotificationHistoryProjection started');
 
   app.listen(PORT, () => {
     console.log(`Backend listening on port ${PORT}`);
