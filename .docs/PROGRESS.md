@@ -15,7 +15,7 @@
 | `rename-todo-list` | state_change | done |
 | `archive-todo-list` | state_change | done |
 | `delete-todo-list` | state_change | done |
-| `create-todo` | state_change | pending |
+| `create-todo` | state_change | done |
 | `edit-todo` | state_change | pending |
 | `set-due-date-on-todo` | state_change | pending |
 | `complete-todo` | state_change | pending |
@@ -66,6 +66,11 @@ _Entries are added here after each slice is merged. Format:_
 - **Two-pass load strategy when event payloads lack a shared key**: when pass 1 must collect IDs (here: `todoId`s from `TodoCreated`), and pass 2 must query a related event type that lacks the top-level key (here: `TodoDeleted` lacks `listId`), issue a second `store.load` that ORs one `(type, 'todoId', value)` matcher per collected ID. The DCB library's SQL OR expansion handles this correctly.
 - **Optimistic concurrency anchored to pass 1**: use `{ query: q1, expectedVersion: version }` from the list-scoped pass. This is the correct scope — it protects against concurrent list-level writes and against new `TodoCreated` events being appended between check and append.
 - **`makeStore` mock for two-pass handlers**: the test helper accepts `pass1Events`/`pass2Events`; when `pass2Events` is `null` the mock throws on any unexpected second `load` call, enforcing that pass 2 is truly skipped in error paths and in the zero-todos path.
+
+### create-todo — 2026-03-02
+- **Priority defaulting before validation**: resolve the priority to `'Medium'` when the field is absent or empty, then validate the resolved value. This avoids a false validation failure when the client omits the field.
+- **list-id attribute pattern**: the `<create-todo>` Web Component reads `list-id` via `this.getAttribute('list-id')` at submit time. No `observedAttributes` needed since the attribute is only needed on submit, not on change.
+- **Optimistic concurrency on the list query**: the `TodoCreated` event is appended with `{ query: q, expectedVersion: version }` where `q` covers `TodoListCreated` + `TodoListDeleted` for the given `listId`. This prevents a race between two concurrent `CreateTodo` commands on a list that gets deleted between check and append.
 
 ### scaffolding — 2026-03-02
 - `store.js` is the single place that creates the PG pool and `PostgresEventStore`. Slice handlers import store from `../../store.js`, never from `server.js` — importing `server.js` would trigger port binding and break tests.
