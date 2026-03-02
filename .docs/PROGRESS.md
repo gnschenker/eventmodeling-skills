@@ -29,7 +29,7 @@
 | `view-todo-detail` | state_view | done |
 | `view-notification-history` | state_view | done |
 | `send-due-date-reminder-notification` | automation | done |
-| `auto-mark-overdue-todos` | automation | pending |
+| `auto-mark-overdue-todos` | automation | done |
 
 ---
 
@@ -119,6 +119,11 @@ _Entries are added here after each slice is merged. Format:_
 ### view-todo-list-detail — 2026-03-02
 - **Deleted rows are kept (status='deleted')**: unlike TodoListsProjection (which deletes rows on `TodoListDeleted`), the detail projection marks the row as `status='deleted'`. This allows `GET /todo-lists/:listId` to return meaningful data for audit and prevents confusion between "never existed" (404) and "existed but deleted" (still 404 in current implementation, but the data is available for future 410 responses).
 - **`GET /todo-lists/:listId` registered after `GET /todo-lists`**: Express matches routes in registration order. The specific `:listId` route must be registered after the bare `/todo-lists` route to avoid shadowing.
+
+### auto-mark-overdue-todos — 2026-03-02
+- **Include TodoReopened in the DCB query**: a todo can be marked overdue, then completed, then reopened (back to 'active'). If `TodoReopened` is absent from the query, the fold ends at `status='overdue'` and the job skips it — incorrect. Always include all status-changing events in the fold.
+- **Daily trigger via setInterval + UTC time check**: `setInterval(fn, 60_000)` polling every minute with `utcHours===0 && utcMinutes===1` avoids external cron dependencies while precisely hitting 00:01 UTC.
+- **Same two-step pattern as send-due-date-reminder-notification**: SQL projection query for candidates → DCB fold for event-level verification. The SQL filter is an optimization (avoids loading events for all todos); the DCB fold is the authoritative guard.
 
 ### send-due-date-reminder-notification — 2026-03-02
 - **Automation job pattern**: `job.js` exports `runJob({ pool, store, query })` — same dependency injection as handlers, fully testable without a running server. `server.js` schedules via `setInterval` and runs once on startup.
