@@ -5,6 +5,7 @@ import { store } from './store.js';
 // --- Slice routes ---
 import createTodoListRoute from './slices/create-todo-list/route.js';
 import renameTodoListRoute from './slices/rename-todo-list/route.js';
+import archiveTodoListRoute from './slices/archive-todo-list/route.js';
 
 const PORT = process.env.PORT ?? 3000;
 
@@ -25,6 +26,7 @@ app.get('/health', (_req, res) => {
 
 app.use(createTodoListRoute);
 app.use(renameTodoListRoute);
+app.use(archiveTodoListRoute);
 
 // --- Bootstrap ---
 async function start() {
