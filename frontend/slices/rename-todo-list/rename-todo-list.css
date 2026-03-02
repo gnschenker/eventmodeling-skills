@@ -6,7 +6,7 @@
   max-width: 480px;
 }
 
-h2 {
+.rename-todo-list-form h2 {
   margin: 0 0 1.25rem;
   font-size: 1.1rem;
 }
@@ -18,7 +18,7 @@ h2 {
   margin-bottom: 1.25rem;
 }
 
-label {
+.rename-todo-list-form label {
   font-size: 0.9rem;
   font-weight: 600;
 }
@@ -53,7 +53,7 @@ input[aria-invalid="true"] {
   gap: 0.6rem;
 }
 
-button {
+.rename-todo-list-form button {
   padding: 0.5rem 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -62,7 +62,7 @@ button {
   background: #fff;
 }
 
-button:disabled {
+.rename-todo-list-form button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }

@@ -14,13 +14,20 @@ import { handleRenameTodoList } from './handler.js';
  * The DCB API shape used in handler.js:
  *   query.eventsOfType(t).where.key(k).equals(v).eventsOfType(t)...
  * `.where`, `.and`, `.or` are property getters (not method calls).
+ *
+ * Note: chain.key and chain.equals are placed directly on `chain` for
+ * simplicity. The whereProxy also returns them via its `target` fallback
+ * (prop-in-target branch). This is intentionally looser than the real
+ * library Proxy — it satisfies the handler's call pattern and avoids
+ * pulling in es-dcb-library during unit tests.
  */
 function makeQuery() {
   const chain = {};
   const whereProxy = new Proxy(chain, {
     get(target, prop) {
       if (prop in target) return target[prop];
-      // key/field name access — return a function that returns chain
+      // Any unknown property (field name accessors) returns a callable that
+      // chains back, matching the real library's dynamic key selectors.
       return () => chain;
     },
   });

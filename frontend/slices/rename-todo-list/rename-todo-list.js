@@ -25,10 +25,6 @@ template.innerHTML = `
 `;
 
 class RenameTodoList extends HTMLElement {
-  static get observedAttributes() {
-    return ['list-id'];
-  }
-
   connectedCallback() {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
