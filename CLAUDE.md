@@ -213,6 +213,8 @@ Implementation proceeds one EM slice at a time using two specialist agents:
 - Works in a dedicated feature branch named `feat/<slice-folder-name>`
 - Creates the slice folder(s) in `backend/slices/` and `frontend/slices/`
 - Writes the implementation **and** tests before opening a PR
+- **Before opening the PR**: runs `docker compose up --build -d` from the repo root and verifies the stack starts cleanly (no crash-loops, health check passes). Tears down with `docker compose down` afterwards.
+- Updates `README.md` to reflect the newly implemented slice (adds the endpoint / component to the relevant section)
 - Fixes all issues found by Sandy, then requests re-review
 
 ### Sandy — Code review specialist
@@ -229,6 +231,7 @@ After Sandy merges a PR, **both agents must update `.docs/PROGRESS.md`**:
 
 1. Mark the slice as `done` in the status table.
 2. Add a "Lessons learned" entry under the slice if anything noteworthy came up during implementation or review (tricky DCB query, projection idempotency gotcha, unexpected UI edge case, etc.).
+3. Ensure `README.md` was updated in the PR (Sandy checks this during review).
 
 **Before starting any slice**, read `.docs/PROGRESS.md` to understand what is already done and what patterns were established in previous slices. Never re-implement a completed slice.
 
